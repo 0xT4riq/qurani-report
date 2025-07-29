@@ -230,14 +230,10 @@ async function displayMyReports() {
           <li>حضور اللقاء الأسبوعي: ${rep.hadir ? '✅' : '❌'}</li>
           <li>الاستغفار ١٠٠ مرة يوميًا: ${rep.istighfar ? '✅' : '❌'}</li>
           <li>الصلاة على النبي ١٠٠ مرة يوميًا: ${rep.salawat ? '✅' : '❌'}</li>
-          <li>مراجعة الحفظ مرتين: ${rep.murajaah ? '✅' : '❌'}</li>
-          <li>تثبيت الحفظ القريب: ${rep.tathbit ? '✅' : '❌'}</li>
+          <li>مراجعة الحفظ البعيد مرتان: ${rep.murajaah ? '✅' : '❌'}</li>
+          <li>تثبيت الحفظ القريب مرتان: ${rep.tathbit ? '✅' : '❌'}</li>
           <li>حفظ المقرر الأسبوعي: ${rep.hifz ? '✅' : '❌'}</li>
         </ul>
-        <div class="action-buttons">
-          <button onclick="editReportForm('${rep._id}')">✏️ تعديل</button>
-          <button onclick="exportPDFById('${rep._id}')">📄 تحميل PDF</button>
-        </div>
       `;
       container.appendChild(div);
     });
@@ -282,8 +278,8 @@ async function displayReports() {
           <li>حضور اللقاء الأسبوعي: ${rep.hadir ? '✅' : '❌'}</li>
           <li>الاستغفار ١٠٠ مرة يوميًا: ${rep.istighfar ? '✅' : '❌'}</li>
           <li>الصلاة على النبي ١٠٠ مرة يوميًا: ${rep.salawat ? '✅' : '❌'}</li>
-          <li>مراجعة الحفظ مرتين: ${rep.murajaah ? '✅' : '❌'}</li>
-          <li>تثبيت الحفظ القريب: ${rep.tathbit ? '✅' : '❌'}</li>
+          <li>مراجعة الحفظ البعيد مرتان: ${rep.murajaah ? '✅' : '❌'}</li>
+          <li>تثبيت الحفظ القريب مرتان: ${rep.tathbit ? '✅' : '❌'}</li>
           <li>حفظ المقرر الأسبوعي: ${rep.hifz ? '✅' : '❌'}</li>
         </ul>
         <div class="action-buttons">
@@ -323,8 +319,8 @@ function editReportForm(reportId) {
       <label><input type="checkbox" id="edit-hadir" ${rep.hadir ? 'checked' : ''}> حضور اللقاء الأسبوعي</label><br>
       <label><input type="checkbox" id="edit-istighfar" ${rep.istighfar ? 'checked' : ''}> الاستغفار ١٠٠ مرة يوميًا</label><br>
       <label><input type="checkbox" id="edit-salawat" ${rep.salawat ? 'checked' : ''}> الصلاة على النبي ١٠٠ مرة يوميًا</label><br>
-      <label><input type="checkbox" id="edit-murajaah" ${rep.murajaah ? 'checked' : ''}> مراجعة الحفظ مرتين</label><br>
-      <label><input type="checkbox" id="edit-tathbit" ${rep.tathbit ? 'checked' : ''}> تثبيت الحفظ القريب</label><br>
+      <label><input type="checkbox" id="edit-murajaah" ${rep.murajaah ? 'checked' : ''}> مراجعة الحفظ البعيج مرتان</label><br>
+      <label><input type="checkbox" id="edit-tathbit" ${rep.tathbit ? 'checked' : ''}> تثبيت الحفظ القريب مرتان</label><br>
       <label><input type="checkbox" id="edit-hifz" ${rep.hifz ? 'checked' : ''}> حفظ المقرر الأسبوعي</label><br>
     </div>
     <button type="submit">💾 حفظ التعديلات</button>
@@ -430,7 +426,6 @@ async function loadReports() {
         } else {
             reports = await response.json();
             reportsLoaded = true; // ✅ تم التحميل
-            console.log('تم تحميل التقارير بنجاح:', reports);
             document.getElementById("exportBtn").disabled = false;
         }
 
@@ -493,8 +488,8 @@ async function exportPDF(rep) {
         { label: 'حضور اللقاء الأسبوعي', key: 'hadir' },
         { label: 'الاستغفار ١٠٠ مرة يوميًا', key: 'istighfar' },
         { label: 'الصلاة على النبي ١٠٠ مرة يوميًا', key: 'salawat' },
-        { label: 'مراجعة الحفظ مرتين', key: 'murajaah' },
-        { label: 'تثبيت الحفظ القريب', key: 'tathbit' },
+        { label: 'مراجعة الحفظ البعيد مرتان', key: 'murajaah' },
+        { label: 'تثبيت الحفظ القريب مرتان', key: 'tathbit' },
         { label: 'حفظ المقرر الأسبوعي', key: 'hifz' }
     ];
 
@@ -750,6 +745,146 @@ async function exportFilteredPDF(userType) {
 
     doc.save(`${fileNamePrefix}.pdf`);
 }
+function toArabicIndicNumbers(str) {
+  return str.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+async function exportActivitySummaryPDF(allReports) {
+    const doc = new window.jspdf.jsPDF();
+    await setupArabicFont(doc);
+
+
+    const pageWidth = doc.internal.pageSize.width;
+    const marginLeft = 10;
+    const marginRight = 10;
+    const logoWidth = 30;
+    const logoHeight = 30;
+
+
+// === الهيدر (اللوجو والعنوان والخط) ===
+    let y = 5;
+    doc.addImage(logoBase64, 'PNG', (pageWidth - logoWidth) / 2, y, logoWidth, logoHeight);
+
+    const titleY = y + logoHeight + 5;
+    doc.setFontSize(14);
+    doc.text(`تقارير منصة قرآني - نبض حياتي`, pageWidth / 2, titleY, { align: 'center' });
+
+    const lineY = titleY + 5;
+    doc.setLineWidth(0.5);
+    doc.line(marginLeft, lineY, pageWidth - marginRight, lineY);
+
+    let yPos = lineY + 10;
+
+    // === النشاطات والإحصاءات ===
+    const activities = [
+        { key: 'hadir', label: 'حضور اللقاء الأسبوعي' },
+        { key: 'istighfar', label: 'الاستغفار ١٠٠ مرة يوميًا' },
+        { key: 'salawat', label: 'الصلاة على النبي ١٠٠ مرة يوميًا' },
+        { key: 'murajaah', label: 'مراجعة الحفظ البعيد مرتان' },
+        { key: 'tathbit', label: 'تثبيت الحفظ القريب مرتان' },
+        { key: 'hifz', label: 'حفظ المقرر الأسبوعي' }
+    ];
+    // حساب عدد الأسابيع الفريدة
+    const uniqueWeeks = new Set(allReports.map(r => r.week));
+    const maxTotal = uniqueWeeks.size; // هذا هو العدد الصحيح الذي يُقاس عليه الجميع
+
+    const studentStats = {};
+    allReports.forEach(rep => {
+        if (!studentStats[rep.name]) {
+            studentStats[rep.name] = {
+                hadir: 0, istighfar: 0, salawat: 0,
+                murajaah: 0, tathbit: 0, hifz: 0,
+                total: 0
+            };
+        }
+        activities.forEach(act => {
+            if (rep[act.key]) studentStats[rep.name][act.key]++;
+        });
+        studentStats[rep.name].total++;
+    });
+
+    activities.forEach(activity => {
+        yPos += 10;
+        doc.setFontSize(14);
+        doc.text(`${activity.label} (من الأكثر إلى الأقل)`, pageWidth - marginRight, yPos, { align: 'right' });
+        yPos += 8;
+
+        doc.setFontSize(12);
+        const sorted = Object.entries(studentStats)
+            .map(([name, data]) => ({
+                name,
+                count: data[activity.key],
+                total: data.total
+            }))
+            .sort((a, b) => b.count - a.count);
+
+
+        sorted.forEach(s => {
+            const progressBarWidth = 60;
+            const progressBarHeight = 5;
+            const barX = pageWidth - marginRight - progressBarWidth - 50; // ترك مسافة كافية
+            const barY = yPos;
+
+            const progressText = `${toArabicIndicNumbers(s.count)} من ${toArabicIndicNumbers(maxTotal)}`;
+            const nameX = pageWidth - marginRight;
+            const progressTextX = barX - 5;
+
+            // اسم الطالب
+            doc.setFontSize(12);
+            doc.text(s.name, nameX, barY + 4, { align: 'right' });
+
+            // خلفية البار (رمادي)
+            doc.setFillColor(220);
+            doc.rect(barX, barY, progressBarWidth, progressBarHeight, 'F');
+
+            // نسبة الإنجاز
+            const ratio = s.total > 0 ? s.count / maxTotal : 0;
+            const filledWidth = ratio * progressBarWidth;
+
+            // شريط التقدم (أخضر)
+            doc.setFillColor(76, 175, 80);
+            doc.rect(barX, barY, filledWidth, progressBarHeight, 'F');
+
+            // النص: 2 من 3
+            doc.setFontSize(10);
+            doc.text(progressText, progressTextX, barY + 4, { align: 'right' });
+
+            yPos += 10;
+
+            if (yPos > 270) {
+                doc.addPage();
+
+                // إعادة الهيدر في الصفحة الجديدة
+                const y = 10;
+                doc.addImage(logoBase64, 'PNG', (pageWidth - logoWidth) / 2, y, logoWidth, logoHeight);
+                const titleY = y + logoHeight + 5;
+                doc.setFontSize(14);
+                doc.text(`تقارير منصة قرآني - نبض حياتي`, pageWidth / 2, titleY, { align: 'center' });
+                const lineY = titleY + 5;
+                doc.setLineWidth(0.5);
+                doc.line(marginLeft, lineY, pageWidth - marginRight, lineY);
+                yPos = lineY + 10;
+            }
+        });
+
+
+        yPos += 5;
+        doc.setLineWidth(0.2);
+        doc.line(marginLeft, yPos, pageWidth - marginRight, yPos);
+        yPos += 5;
+    });
+
+    doc.save('summary-by-activity.pdf');
+}
+async function generateActivitySummary() {
+    const res = await fetch('/api/reports');
+    const allReports = await res.json();
+    if (allReports.length === 0) {
+        alert('لا توجد تقارير لعرضها');
+        return;
+    }
+
+    exportActivitySummaryPDF(allReports);
+}
 
 
 
@@ -813,9 +948,99 @@ async function rejectAccount(nameToReject) {
   }
 }
 
+function isWednesday() {
+  const today = new Date().getDay(); // 0 = Sunday, 3 = Wednesday
+  return today === 3;
+}
+
+function checkFormAvailability() {
+  if (!isWednesday()) {
+    document.getElementById('report-form').style.display = 'none';
+    document.getElementById('form-closed-message').style.display = 'block';
+  } else {
+    document.getElementById('report-form').style.display = 'block';
+    document.getElementById('form-closed-message').style.display = 'none';
+  }
+}
+let accounts = [];
+let accountsLoaded = false;
+let searchTimeout;
+
+async function loadAccounts() {
+  if (accountsLoaded) return; // لا تعيد التحميل إذا تم مسبقا
+  try {
+    const response = await fetch('/api/accounts'); // تأكد من صحة المسار
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.warn('ملف accounts.json غير موجود على الخادم. سيتم تهيئة الحسابات فارغة.');
+        accounts = [];
+      } else {
+        throw new Error(`خطأ في تحميل الحسابات: ${response.statusText}`);
+      }
+    } else {
+      accounts = await response.json();
+      accountsLoaded = true;
+    }
+  } catch (err) {
+    accounts = [];
+    accountsLoaded = false;
+    console.error('خطأ عند تحميل الحسابات:', err.message);
+    alert(`لا يمكن تحميل الحسابات: ${err.message}`);
+  }
+}
+
+async function openPasswordPopup() {
+  await loadAccounts();
+  document.getElementById("passwordPopup").style.display = "block";
+  document.getElementById("studentSearch").value = "";
+  document.getElementById("passwordResults").innerHTML = "";
+}
+
+function closePasswordPopup() {
+  document.getElementById("passwordPopup").style.display = "none";
+}
+
+function debouncedSearch() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(searchStudentPassword, 300); // تأخير 300 مللي ثانية قبل البحث
+}
+
+function searchStudentPassword() {
+  const query = document.getElementById("studentSearch").value.trim().toLowerCase();
+  const resultsDiv = document.getElementById("passwordResults");
+  resultsDiv.innerHTML = '';
+
+  if (!query) return;
+
+  // ابحث عن جميع الحسابات التي تحتوي الاسم فيها على نص البحث (غير حساس لحالة الحروف)
+  const matched = accounts.filter(acc => acc.name.toLowerCase().includes(query));
+
+  if (matched.length === 0) {
+    resultsDiv.textContent = "لم يتم العثور على الطالب.";
+    return;
+  }
+
+  // اعرض قائمة بالطلاب المطابقين مع بياناتهم وكلمة المرور
+  matched.forEach(acc => {
+    const div = document.createElement('div');
+    div.style.borderBottom = '1px solid #ddd';
+    div.style.padding = '8px 0';
+
+    div.innerHTML = `
+      <p><strong>الاسم:</strong> ${acc.name}</p>
+      ${acc.username ? `<p><strong>اسم المستخدم:</strong> ${acc.username}</p>` : ''}
+      ${acc.email ? `<p><strong>البريد الإلكتروني:</strong> ${acc.email}</p>` : ''}
+      <p><strong>كلمة المرور:</strong> <span style="color: red;">${acc.password}</span></p>
+    `;
+
+    resultsDiv.appendChild(div);
+  });
+}
 
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {
+    checkFormAvailability();
     loadReports();
+    loadAccounts()
     showLogin(); 
 });

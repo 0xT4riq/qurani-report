@@ -119,6 +119,16 @@ const { v4: uuidv4 } = require('uuid'); // Install uuid package
 app.post('/api/report', (req, res) => {
   const reports = readJSON('reports.json');
   const newReport = req.body;
+    const alreadySent = reports.find(r =>
+    r.name === newReport.name && r.week === newReport.week
+    );
+
+  if (alreadySent) {
+    return res.status(400).json({
+      success: false,
+      message: 'لقد قمت بإرسال تقرير لهذا الأسبوع مسبقًا.'
+    });
+  }
   newReport._id = uuidv4(); // Add unique ID
   reports.push(newReport);
   writeJSON('reports.json', reports);

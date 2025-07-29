@@ -1,7 +1,7 @@
 [
   {
     "_id": "1",
-    "name": "احمد بن سعيد",
+    "name": "أحمد بن سعيد",
     "date": "2025-07-29",
     "surah": "الزمر",
     "week": "الأسبوع 1",
@@ -48,7 +48,126 @@
     "salawat": true,
     "murajaah": true,
     "tathbit": true,
-    "hifz": true,
+    "hifz": false,
     "_id": "42d2f399-7105-42ee-8386-988f96b54e66"
+  },
+  {
+    "name": "أحمد بن سعيد",
+    "date": "2025-07-29",
+    "surah": "الفاتحة",
+    "week": "الأسبوع 4",
+    "hadir": false,
+    "istighfar": false,
+    "salawat": false,
+    "murajaah": true,
+    "tathbit": true,
+    "hifz": false,
+    "_id": "5b7af0b7-1358-45d4-882b-844f3ebd343f"
+  },
+  
+  {
+    "_id": "6",
+    "name": "سالم الهنائي",
+    "date": "2025-07-22",
+    "surah": "مريم",
+    "week": "الأسبوع 2",
+    "hadir": true,
+    "istighfar": true,
+    "salawat": true,
+    "murajaah": false,
+    "tathbit": false,
+    "hifz": false
+  },
+  {
+    "_id": "7",
+    "name": "سعيد البلوشي",
+    "date": "2025-07-29",
+    "surah": "النور",
+    "week": "الأسبوع 1",
+    "hadir": true,
+    "istighfar": false,
+    "salawat": false,
+    "murajaah": false,
+    "tathbit": true,
+    "hifz": false
+  },
+  {
+    "_id": "8",
+    "name": "سعيد البلوشي",
+    "date": "2025-07-22",
+    "surah": "القصص",
+    "week": "الأسبوع 2",
+    "hadir": true,
+    "istighfar": true,
+    "salawat": true,
+    "murajaah": true,
+    "tathbit": true,
+    "hifz": true
+  },
+  {
+    "_id": "9",
+    "name": "راشد السيابي",
+    "date": "2025-07-29",
+    "surah": "طه",
+    "week": "الأسبوع 1",
+    "hadir": false,
+    "istighfar": false,
+    "salawat": false,
+    "murajaah": false,
+    "tathbit": false,
+    "hifz": false
+  },
+  {
+    "_id": "10",
+    "name": "راشد السيابي",
+    "date": "2025-07-22",
+    "surah": "الأنبياء",
+    "week": "الأسبوع 2",
+    "hadir": false,
+    "istighfar": true,
+    "salawat": false,
+    "murajaah": false,
+    "tathbit": false,
+    "hifz": true
+  },
+  {
+    "_id": "11",
+    "name": "منذر الرواحي",
+    "date": "2025-07-29",
+    "surah": "التوبة",
+    "week": "الأسبوع 1",
+    "hadir": true,
+    "istighfar": true,
+    "salawat": true,
+    "murajaah": true,
+    "tathbit": true,
+    "hifz": true
+  },
+  {
+    "_id": "12",
+    "name": "منذر الرواحي",
+    "date": "2025-07-22",
+    "surah": "الأنفال",
+    "week": "الأسبوع 2",
+    "hadir": true,
+    "istighfar": true,
+    "salawat": false,
+    "murajaah": true,
+    "tathbit": true,
+    "hifz": false
+  },
+  {
+    "_id": "13",
+    "name": "منذر الرواحي",
+    "date": "2025-07-15",
+    "surah": "الشعراء",
+    "week": "الأسبوع 3",
+    "hadir": true,
+    "istighfar": true,
+    "salawat": true,
+    "murajaah": false,
+    "tathbit": true,
+    "hifz": false
   }
+
 ]
