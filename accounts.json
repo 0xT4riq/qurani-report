@@ -16,5 +16,11 @@
     "password": "admin",
     "approved": true,
     "isAdmin": true
+  },
+  {
+    "name": "طارق الحراصي",
+    "password": "12345678",
+    "approved": false,
+    "isAdmin": false
   }
 ]

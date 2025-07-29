@@ -148,7 +148,33 @@ app.post('/api/login', (req, res) => {
 
   res.json(user);
 });
+app.post('/api/register', (req, res) => {
+  const { name, password } = req.body;
 
+  if (!name || !password) {
+    return res.status(400).json({ success: false, message: 'الاسم وكلمة المرور مطلوبان.' });
+  }
+
+  const accounts = readJSON('accounts.json');
+
+  // تحقق إذا المستخدم موجود
+  const exists = accounts.some(acc => acc.name === name);
+  if (exists) {
+    return res.status(409).json({ success: false, message: 'اسم المستخدم مسجل مسبقاً.' });
+  }
+
+  const newUser = {
+    name,
+    password,
+    approved: false,
+    isAdmin: false
+  };
+
+  accounts.push(newUser);
+  writeJSON('accounts.json', accounts);
+
+  res.status(201).json({ success: true, message: 'تم التسجيل بنجاح. يرجى انتظار الموافقة.' });
+});
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
