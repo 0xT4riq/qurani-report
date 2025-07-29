@@ -227,12 +227,12 @@ async function displayMyReports() {
       div.innerHTML = `
         <p><strong>${rep.name}</strong> - ${rep.week} - سورة ${rep.surah} (${rep.date})</p>
         <ul>
-          <li>حضور اللقاء: ${rep.hadir ? '✅' : '❌'}</li>
-          <li>استغفار: ${rep.istighfar ? '✅' : '❌'}</li>
-          <li>صلاة على النبي: ${rep.salawat ? '✅' : '❌'}</li>
-          <li>مراجعة: ${rep.murajaah ? '✅' : '❌'}</li>
-          <li>تثبيت: ${rep.tathbit ? '✅' : '❌'}</li>
-          <li>حفظ: ${rep.hifz ? '✅' : '❌'}</li>
+          <li>حضور اللقاء الأسبوعي: ${rep.hadir ? '✅' : '❌'}</li>
+          <li>الاستغفار ١٠٠ مرة يوميًا: ${rep.istighfar ? '✅' : '❌'}</li>
+          <li>الصلاة على النبي ١٠٠ مرة يوميًا: ${rep.salawat ? '✅' : '❌'}</li>
+          <li>مراجعة الحفظ مرتين: ${rep.murajaah ? '✅' : '❌'}</li>
+          <li>تثبيت الحفظ القريب: ${rep.tathbit ? '✅' : '❌'}</li>
+          <li>حفظ المقرر الأسبوعي: ${rep.hifz ? '✅' : '❌'}</li>
         </ul>
         <div class="action-buttons">
           <button onclick="editReportForm('${rep._id}')">✏️ تعديل</button>
@@ -279,12 +279,12 @@ async function displayReports() {
       div.innerHTML = `
         <p><strong>${rep.name}</strong> - ${rep.week} - سورة ${rep.surah} (${rep.date})</p>
         <ul>
-          <li>حضور اللقاء: ${rep.hadir ? '✅' : '❌'}</li>
-          <li>استغفار: ${rep.istighfar ? '✅' : '❌'}</li>
-          <li>صلاة على النبي: ${rep.salawat ? '✅' : '❌'}</li>
-          <li>مراجعة: ${rep.murajaah ? '✅' : '❌'}</li>
-          <li>تثبيت: ${rep.tathbit ? '✅' : '❌'}</li>
-          <li>حفظ: ${rep.hifz ? '✅' : '❌'}</li>
+          <li>حضور اللقاء الأسبوعي: ${rep.hadir ? '✅' : '❌'}</li>
+          <li>الاستغفار ١٠٠ مرة يوميًا: ${rep.istighfar ? '✅' : '❌'}</li>
+          <li>الصلاة على النبي ١٠٠ مرة يوميًا: ${rep.salawat ? '✅' : '❌'}</li>
+          <li>مراجعة الحفظ مرتين: ${rep.murajaah ? '✅' : '❌'}</li>
+          <li>تثبيت الحفظ القريب: ${rep.tathbit ? '✅' : '❌'}</li>
+          <li>حفظ المقرر الأسبوعي: ${rep.hifz ? '✅' : '❌'}</li>
         </ul>
         <div class="action-buttons">
           <button onclick="editReportForm('${rep._id}')">✏️ تعديل</button>
@@ -320,12 +320,12 @@ function editReportForm(reportId) {
     <label>السورة:</label>
     <input type="text" id="edit-surah" value="${rep.surah}">
     <div class="checkbox-group">
-      <label><input type="checkbox" id="edit-hadir" ${rep.hadir ? 'checked' : ''}> حضور اللقاء</label><br>
-      <label><input type="checkbox" id="edit-istighfar" ${rep.istighfar ? 'checked' : ''}> استغفار</label><br>
-      <label><input type="checkbox" id="edit-salawat" ${rep.salawat ? 'checked' : ''}> صلاة على النبي</label><br>
-      <label><input type="checkbox" id="edit-murajaah" ${rep.murajaah ? 'checked' : ''}> مراجعة</label><br>
-      <label><input type="checkbox" id="edit-tathbit" ${rep.tathbit ? 'checked' : ''}> تثبيت</label><br>
-      <label><input type="checkbox" id="edit-hifz" ${rep.hifz ? 'checked' : ''}> حفظ</label><br>
+      <label><input type="checkbox" id="edit-hadir" ${rep.hadir ? 'checked' : ''}> حضور اللقاء الأسبوعي</label><br>
+      <label><input type="checkbox" id="edit-istighfar" ${rep.istighfar ? 'checked' : ''}> الاستغفار ١٠٠ مرة يوميًا</label><br>
+      <label><input type="checkbox" id="edit-salawat" ${rep.salawat ? 'checked' : ''}> الصلاة على النبي ١٠٠ مرة يوميًا</label><br>
+      <label><input type="checkbox" id="edit-murajaah" ${rep.murajaah ? 'checked' : ''}> مراجعة الحفظ مرتين</label><br>
+      <label><input type="checkbox" id="edit-tathbit" ${rep.tathbit ? 'checked' : ''}> تثبيت الحفظ القريب</label><br>
+      <label><input type="checkbox" id="edit-hifz" ${rep.hifz ? 'checked' : ''}> حفظ المقرر الأسبوعي</label><br>
     </div>
     <button type="submit">💾 حفظ التعديلات</button>
     <button type="button" id="cancel-edit-btn">إلغاء</button>
@@ -490,12 +490,12 @@ async function exportPDF(rep) {
 
     // جدول الأعمال
     const activities = [
-        { label: 'حضور اللقاء', key: 'hadir' },
-        { label: 'استغفار', key: 'istighfar' },
-        { label: 'صلاة على النبي', key: 'salawat' },
-        { label: 'مراجعة', key: 'murajaah' },
-        { label: 'تثبيت', key: 'tathbit' },
-        { label: 'حفظ', key: 'hifz' }
+        { label: 'حضور اللقاء الأسبوعي', key: 'hadir' },
+        { label: 'الاستغفار ١٠٠ مرة يوميًا', key: 'istighfar' },
+        { label: 'الصلاة على النبي ١٠٠ مرة يوميًا', key: 'salawat' },
+        { label: 'مراجعة الحفظ مرتين', key: 'murajaah' },
+        { label: 'تثبيت الحفظ القريب', key: 'tathbit' },
+        { label: 'حفظ المقرر الأسبوعي', key: 'hifz' }
     ];
 
     // تعيين أعمدة الجدول
