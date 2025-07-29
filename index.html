@@ -1,479 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة قرآني - نبض حياتي</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <h2>منصة قرآني - نبض حياتي</h2>
-
-    <div id="login-box">
-      <label for="login-name">الاسم:</label>
-      <input type="text" id="login-name">
-      <label for="login-password">كلمة المرور:</label>
-      <input type="password" id="login-password">
-      <button onclick="login()">دخول</button>
-      <button onclick="showRegister()">إنشاء حساب جديد</button>
-    </div>
-
-    <div id="register-box" class="hidden">
-        <h3>إنشاء حساب جديد</h3>
-        <label for="register-name">الاسم:</label>
-        <input type="text" id="register-name">
-        <label for="register-password">كلمة المرور:</label>
-        <input type="password" id="register-password">
-        <button onclick="registerUser()">تسجيل</button>
-        <button onclick="showLogin()">العودة لتسجيل الدخول</button>
-    </div>
-
-    <div id="report-box" class="hidden">
-      <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
-      <h3>تقرير الأسبوع</h3>
-      <label for="surahSelect">اختر السورة:</label>
-      <select id="surahSelect">
-        <option value="">اختر سورة...</option>
-              <option>الفاتحة</option>
-              <option>البقرة</option>
-              <option>آل عمران</option>
-              <option>النساء</option>
-              <option>المائدة</option>
-              <option>الأنعام</option>
-              <option>الأعراف</option>
-              <option>الأنفال</option>
-              <option>التوبة</option>
-              <option>يونس</option>
-              <option>هود</option>
-              <option>يوسف</option>
-              <option>الرعد</option>
-              <option>إبراهيم</option>
-              <option>الحجر</option>
-              <option>النحل</option>
-              <option>الإسراء</option>
-              <option>الكهف</option>
-              <option>مريم</option>
-              <option>طه</option>
-              <option>الأنبياء</option>
-              <option>الحج</option>
-              <option>المؤمنون</option>
-              <option>النور</option>
-              <option>الفرقان</option>
-              <option>الشعراء</option>
-              <option>النمل</option>
-              <option>القصص</option>
-              <option>العنكبوت</option>
-              <option>الروم</option>
-              <option>لقمان</option>
-              <option>السجدة</option>
-              <option>الأحزاب</option>
-              <option>سبأ</option>
-              <option>فاطر</option>
-              <option>يس</option>
-              <option>الصافات</option>
-              <option>ص</option>
-              <option>الزمر</option>
-              <option>غافر</option>
-              <option>فصلت</option>
-              <option>الشورى</option>
-              <option>الزخرف</option>
-              <option>الدخان</option>
-              <option>الجاثية</option>
-              <option>الأحقاف</option>
-              <option>محمد</option>
-              <option>الفتح</option>
-              <option>الحجرات</option>
-              <option>ق</option>
-              <option>الذاريات</option>
-              <option>الطور</option>
-              <option>النجم</option>
-              <option>القمر</option>
-              <option>الرحمن</option>
-              <option>الواقعة</option>
-              <option>الحديد</option>
-              <option>المجادلة</option>
-              <option>الحشر</option>
-              <option>الممتحنة</option>
-              <option>الصف</option>
-              <option>الجمعة</option>
-              <option>المنافقون</option>
-              <option>التغابن</option>
-              <option>الطلاق</option>
-              <option>التحريم</option>
-              <option>الملك</option>
-              <option>القلم</option>
-              <option>الحاقة</option>
-              <option>المعارج</option>
-              <option>نوح</option>
-              <option>الجن</option>
-              <option>المزمل</option>
-              <option>المدثر</option>
-              <option>القيامة</option>
-              <option>الإنسان</option>
-              <option>المرسلات</option>
-              <option>النبأ</option>
-              <option>النازعات</option>
-              <option>عبس</option>
-              <option>التكوير</option>
-              <option>الانفطار</option>
-              <option>المطففين</option>
-              <option>الانشقاق</option>
-              <option>البروج</option>
-              <option>الطارق</option>
-              <option>الأعلى</option>
-              <option>الغاشية</option>
-              <option>الفجر</option>
-              <option>البلد</option>
-              <option>الشمس</option>
-              <option>الليل</option>
-              <option>الضحى</option>
-              <option>الشرح</option>
-              <option>التين</option>
-              <option>العلق</option>
-              <option>القدر</option>
-              <option>البينة</option>
-              <option>الزلزلة</option>
-              <option>العاديات</option>
-              <option>القارعة</option>
-              <option>التكاثر</option>
-              <option>العصر</option>
-              <option>الهمزة</option>
-              <option>الفيل</option>
-              <option>قريش</option>
-              <option>الماعون</option>
-              <option>الكوثر</option>
-              <option>الكافرون</option>
-              <option>النصر</option>
-              <option>المسد</option>
-              <option>الإخلاص</option>
-              <option>الفلق</option>
-      </select>
-      <label for="weekSelect">اختر الأسبوع:</label>
-      <select id="weekSelect">
-        <option value="">اختر أسبوع...</option>
-              <option>الأسبوع 1</option>
-              <option>الأسبوع 2</option>
-              <option>الأسبوع 3</option>
-              <option>الأسبوع 4</option>
-              <option>الأسبوع 5</option>
-              <option>الأسبوع 6</option>
-              <option>الأسبوع 7</option>
-              <option>الأسبوع 8</option>
-              <option>الأسبوع 9</option>
-              <option>الأسبوع 10</option>
-              <option>الأسبوع 11</option>
-              <option>الأسبوع 12</option>
-              <option>الأسبوع 13</option>
-              <option>الأسبوع 14</option>
-      </select>
-
-      <div class="checkbox-group">
-        <label><input type="checkbox" id="hadir"> حضور اللقاء الأسبوعي</label>
-        <label><input type="checkbox" id="istighfar"> الاستغفار ١٠٠ مرة يوميًا</label>
-        <label><input type="checkbox" id="salawat"> الصلاة على النبي ١٠٠ مرة يوميًا</label>
-        <label><input type="checkbox" id="murajaah"> مراجعة الحفظ مرتين</label>
-        <label><input type="checkbox" id="tathbit"> تثبيت الحفظ القريب</label>
-        <label><input type="checkbox" id="hifz"> حفظ المقرر الأسبوعي</label>
-      </div>
-      <button onclick="submitReport()">إرسال التقرير</button>
-      <hr>
-      <h4>تقاريري السابقة:</h4>
-      <div class="filter-print-section">
-          <label for="myReportWeekFilter">تصفية حسب الأسبوع:</label>
-          <select id="myReportWeekFilter" onchange="displayMyReports()">
-              <option value="">جميع الأسابيع</option>
-              <option>الأسبوع 1</option>
-              <option>الأسبوع 2</option>
-              <option>الأسبوع 3</option>
-              <option>الأسبوع 4</option>
-              <option>الأسبوع 5</option>
-              <option>الأسبوع 6</option>
-              <option>الأسبوع 7</option>
-              <option>الأسبوع 8</option>
-              <option>الأسبوع 9</option>
-              <option>الأسبوع 10</option>
-              <option>الأسبوع 11</option>
-              <option>الأسبوع 12</option>
-              <option>الأسبوع 13</option>
-              <option>الأسبوع 14</option>
-          </select>
-          <label for="myReportSurahFilter">تصفية حسب السورة:</label>
-          <select id="myReportSurahFilter" onchange="displayMyReports()">
-              <option value="">جميع السور</option>
-              <option>الفاتحة</option>
-              <option>البقرة</option>
-              <option>آل عمران</option>
-              <option>النساء</option>
-              <option>المائدة</option>
-              <option>الأنعام</option>
-              <option>الأعراف</option>
-              <option>الأنفال</option>
-              <option>التوبة</option>
-              <option>يونس</option>
-              <option>هود</option>
-              <option>يوسف</option>
-              <option>الرعد</option>
-              <option>إبراهيم</option>
-              <option>الحجر</option>
-              <option>النحل</option>
-              <option>الإسراء</option>
-              <option>الكهف</option>
-              <option>مريم</option>
-              <option>طه</option>
-              <option>الأنبياء</option>
-              <option>الحج</option>
-              <option>المؤمنون</option>
-              <option>النور</option>
-              <option>الفرقان</option>
-              <option>الشعراء</option>
-              <option>النمل</option>
-              <option>القصص</option>
-              <option>العنكبوت</option>
-              <option>الروم</option>
-              <option>لقمان</option>
-              <option>السجدة</option>
-              <option>الأحزاب</option>
-              <option>سبأ</option>
-              <option>فاطر</option>
-              <option>يس</option>
-              <option>الصافات</option>
-              <option>ص</option>
-              <option>الزمر</option>
-              <option>غافر</option>
-              <option>فصلت</option>
-              <option>الشورى</option>
-              <option>الزخرف</option>
-              <option>الدخان</option>
-              <option>الجاثية</option>
-              <option>الأحقاف</option>
-              <option>محمد</option>
-              <option>الفتح</option>
-              <option>الحجرات</option>
-              <option>ق</option>
-              <option>الذاريات</option>
-              <option>الطور</option>
-              <option>النجم</option>
-              <option>القمر</option>
-              <option>الرحمن</option>
-              <option>الواقعة</option>
-              <option>الحديد</option>
-              <option>المجادلة</option>
-              <option>الحشر</option>
-              <option>الممتحنة</option>
-              <option>الصف</option>
-              <option>الجمعة</option>
-              <option>المنافقون</option>
-              <option>التغابن</option>
-              <option>الطلاق</option>
-              <option>التحريم</option>
-              <option>الملك</option>
-              <option>القلم</option>
-              <option>الحاقة</option>
-              <option>المعارج</option>
-              <option>نوح</option>
-              <option>الجن</option>
-              <option>المزمل</option>
-              <option>المدثر</option>
-              <option>القيامة</option>
-              <option>الإنسان</option>
-              <option>المرسلات</option>
-              <option>النبأ</option>
-              <option>النازعات</option>
-              <option>عبس</option>
-              <option>التكوير</option>
-              <option>الانفطار</option>
-              <option>المطففين</option>
-              <option>الانشقاق</option>
-              <option>البروج</option>
-              <option>الطارق</option>
-              <option>الأعلى</option>
-              <option>الغاشية</option>
-              <option>الفجر</option>
-              <option>البلد</option>
-              <option>الشمس</option>
-              <option>الليل</option>
-              <option>الضحى</option>
-              <option>الشرح</option>
-              <option>التين</option>
-              <option>العلق</option>
-              <option>القدر</option>
-              <option>البينة</option>
-              <option>الزلزلة</option>
-              <option>العاديات</option>
-              <option>القارعة</option>
-              <option>التكاثر</option>
-              <option>العصر</option>
-              <option>الهمزة</option>
-              <option>الفيل</option>
-              <option>قريش</option>
-              <option>الماعون</option>
-              <option>الكوثر</option>
-              <option>الكافرون</option>
-              <option>النصر</option>
-              <option>المسد</option>
-              <option>الإخلاص</option>
-              <option>الفلق</option>
-          </select>
-          <button onclick="exportFilteredPDF('student')">📄 تحميل التقارير المفلترة PDF</button>
-      </div>
-      <div id="my-reports-list"></div>
-    </div>
-
-    <div id="admin-box" class="hidden">
-      <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
-      <h3>لوحة تحكم المشرف</h3>
-      <h4>طلبات تسجيل الحساب:</h4>
-      <div id="accounts-requests"></div>
-      <hr>
-      <h4>التقارير المرسلة:</h4>
-      <div class="search-box">
-        <label for="searchInput">🔍 البحث عن اسم:</label>
-        <input type="text" id="searchInput" placeholder="أدخل الاسم..." oninput="displayReports()">
-      </div>
-      <div class="filter-print-section">
-          <label for="adminReportWeekFilter">تصفية حسب الأسبوع:</label>
-          <select id="adminReportWeekFilter" onchange="displayReports()">
-              <option value="">جميع الأسابيع</option>
-              <option>الأسبوع 1</option>
-              <option>الأسبوع 2</option>
-              <option>الأسبوع 3</option>
-              <option>الأسبوع 4</option>
-              <option>الأسبوع 5</option>
-              <option>الأسبوع 6</option>
-              <option>الأسبوع 7</option>
-              <option>الأسبوع 8</option>
-              <option>الأسبوع 9</option>
-              <option>الأسبوع 10</option>
-              <option>الأسبوع 11</option>
-              <option>الأسبوع 12</option>
-              <option>الأسبوع 13</option>
-              <option>الأسبوع 14</option>
-
-          </select>
-          <label for="adminReportSurahFilter">تصفية حسب السورة:</label>
-          <select id="adminReportSurahFilter" onchange="displayReports()">
-              <option value="">جميع السور</option>
-              <option>الفاتحة</option>
-              <option>البقرة</option>
-              <option>آل عمران</option>
-              <option>النساء</option>
-              <option>المائدة</option>
-              <option>الأنعام</option>
-              <option>الأعراف</option>
-              <option>الأنفال</option>
-              <option>التوبة</option>
-              <option>يونس</option>
-              <option>هود</option>
-              <option>يوسف</option>
-              <option>الرعد</option>
-              <option>إبراهيم</option>
-              <option>الحجر</option>
-              <option>النحل</option>
-              <option>الإسراء</option>
-              <option>الكهف</option>
-              <option>مريم</option>
-              <option>طه</option>
-              <option>الأنبياء</option>
-              <option>الحج</option>
-              <option>المؤمنون</option>
-              <option>النور</option>
-              <option>الفرقان</option>
-              <option>الشعراء</option>
-              <option>النمل</option>
-              <option>القصص</option>
-              <option>العنكبوت</option>
-              <option>الروم</option>
-              <option>لقمان</option>
-              <option>السجدة</option>
-              <option>الأحزاب</option>
-              <option>سبأ</option>
-              <option>فاطر</option>
-              <option>يس</option>
-              <option>الصافات</option>
-              <option>ص</option>
-              <option>الزمر</option>
-              <option>غافر</option>
-              <option>فصلت</option>
-              <option>الشورى</option>
-              <option>الزخرف</option>
-              <option>الدخان</option>
-              <option>الجاثية</option>
-              <option>الأحقاف</option>
-              <option>محمد</option>
-              <option>الفتح</option>
-              <option>الحجرات</option>
-              <option>ق</option>
-              <option>الذاريات</option>
-              <option>الطور</option>
-              <option>النجم</option>
-              <option>القمر</option>
-              <option>الرحمن</option>
-              <option>الواقعة</option>
-              <option>الحديد</option>
-              <option>المجادلة</option>
-              <option>الحشر</option>
-              <option>الممتحنة</option>
-              <option>الصف</option>
-              <option>الجمعة</option>
-              <option>المنافقون</option>
-              <option>التغابن</option>
-              <option>الطلاق</option>
-              <option>التحريم</option>
-              <option>الملك</option>
-              <option>القلم</option>
-              <option>الحاقة</option>
-              <option>المعارج</option>
-              <option>نوح</option>
-              <option>الجن</option>
-              <option>المزمل</option>
-              <option>المدثر</option>
-              <option>القيامة</option>
-              <option>الإنسان</option>
-              <option>المرسلات</option>
-              <option>النبأ</option>
-              <option>النازعات</option>
-              <option>عبس</option>
-              <option>التكوير</option>
-              <option>الانفطار</option>
-              <option>المطففين</option>
-              <option>الانشقاق</option>
-              <option>البروج</option>
-              <option>الطارق</option>
-              <option>الأعلى</option>
-              <option>الغاشية</option>
-              <option>الفجر</option>
-              <option>البلد</option>
-              <option>الشمس</option>
-              <option>الليل</option>
-              <option>الضحى</option>
-              <option>الشرح</option>
-              <option>التين</option>
-              <option>العلق</option>
-              <option>القدر</option>
-              <option>البينة</option>
-              <option>الزلزلة</option>
-              <option>العاديات</option>
-              <option>القارعة</option>
-              <option>التكاثر</option>
-              <option>العصر</option>
-              <option>الهمزة</option>
-              <option>الفيل</option>
-              <option>قريش</option>
-              <option>الماعون</option>
-              <option>الكوثر</option>
-              <option>الكافرون</option>
-              <option>النصر</option>
-              <option>المسد</option>
-              <option>الإخلاص</option>
-              <option>الفلق</option>
-          </select>
-          <button onclick="exportFilteredPDF('admin')">📄 تحميل التقارير المفلترة PDF</button>
-      </div>
-      <div id="reports-list"></div>
-    </div>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>

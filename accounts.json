@@ -1,0 +1,20 @@
+[
+  {
+    "name": "أحمد بن سعيد",
+    "password": "123",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "سالم الهنائي",
+    "password": "456",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "المشرف",
+    "password": "admin",
+    "approved": true,
+    "isAdmin": true
+  }
+]

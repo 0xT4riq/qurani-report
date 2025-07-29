@@ -1,0 +1,54 @@
+[
+  {
+    "_id": "1",
+    "name": "احمد بن سعيد",
+    "date": "2025-07-29",
+    "surah": "الزمر",
+    "week": "الأسبوع 1",
+    "hadir": false,
+    "istighfar": false,
+    "salawat": false,
+    "murajaah": false,
+    "tathbit": false,
+    "hifz": false
+  },
+  {
+    "_id": "2",
+    "name": "أحمد بن سعيد",
+    "date": "2025-07-22",
+    "surah": "يس",
+    "week": "الأسبوع 2",
+    "hadir": true,
+    "istighfar": true,
+    "salawat": true,
+    "murajaah": true,
+    "tathbit": false,
+    "hifz": false
+  },
+  {
+    "_id": "3",
+    "name": "سالم الهنائي",
+    "date": "2025-07-29",
+    "surah": "الكهف",
+    "week": "الأسبوع 1",
+    "hadir": true,
+    "istighfar": false,
+    "salawat": true,
+    "murajaah": false,
+    "tathbit": true,
+    "hifz": true
+  },
+  {
+    "name": "أحمد بن سعيد",
+    "date": "2025-07-29",
+    "surah": "النساء",
+    "week": "الأسبوع 1",
+    "hadir": true,
+    "istighfar": true,
+    "salawat": true,
+    "murajaah": true,
+    "tathbit": true,
+    "hifz": true,
+    "_id": "42d2f399-7105-42ee-8386-988f96b54e66"
+  }
+]
