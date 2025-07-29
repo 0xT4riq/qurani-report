@@ -48,6 +48,7 @@ body {
     padding: 10px;
     background: #f1f1f1;
     border-radius: 6px;
+    margin-bottom: 20px; /* Added margin for better spacing */
   }
   .admin-box, .student-box {
     margin-top: 40px;
@@ -78,10 +79,65 @@ body {
   .logout-btn:hover {
     background-color: #e74c3c;
   }
+  .action-buttons button { /* Style for action buttons within report sections */
+    width: auto;
+    margin: 5px;
+    padding: 8px 15px;
+  }
+  .account-request {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #e9ecef;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  .account-request button {
+    width: auto;
+    margin: 0 5px;
+    padding: 8px 15px;
+  }
+  /* Add this to your style.css */
+.filter-print-section {
+    background: #f1f1f1;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.filter-print-section label {
+    margin: 0;
+    flex-basis: 100%; /* Take full width on small screens */
+    font-weight: normal; /* Override bold for general labels */
+}
+
+.filter-print-section select {
+    width: auto; /* Allow select to size based on content */
+    flex-grow: 1; /* Allow selects to grow */
+    min-width: 120px; /* Minimum width for selects */
+    margin: 0; /* Remove default margin */
+}
+
+.filter-print-section button {
+    width: auto;
+    padding: 10px 20px;
+    margin: 0; /* Remove default margin */
+    flex-grow: 1;
+}
+
+@media screen and (min-width: 600px) {
+    .filter-print-section label {
+        flex-basis: auto; /* Auto width on larger screens */
+    }
+}
   @media screen and (max-width: 600px) {
     .container {
       margin: 20px;
       padding: 15px;
     }
   }
-  
