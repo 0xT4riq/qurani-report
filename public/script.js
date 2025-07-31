@@ -204,6 +204,12 @@ function generateChecklistHtml(rep) {
     return `<li>${item.label}: ${checked}</li>`;
   }).join('');
 }
+
+function extractWeekNumber(weekText) {
+  const match = weekText.match(/\d+/);
+  return match ? parseInt(match[0]) : 0;
+}
+
 // Global variable to hold fetched reports
 let currentReports = [];
 
@@ -236,6 +242,10 @@ async function displayMyReports() {
     if (currentReports.length === 0) {
       container.innerHTML = '<p>لم تقم بإرسال أي تقارير مطابقة للمعايير المحددة.</p>';
       return;
+    }
+    
+    if (!weekFilter) {
+      currentReports.sort((a, b) => extractWeekNumber(b.week) - extractWeekNumber(a.week));
     }
 
     currentReports.forEach((rep) => {
@@ -279,6 +289,9 @@ async function displayReports() {
     if (currentReports.length === 0) {
       container.innerHTML = '<p>لا توجد تقارير مطابقة للبحث أو المعايير المحددة.</p>';
       return;
+    }
+    if (!weekFilter) {
+      currentReports.sort((a, b) => extractWeekNumber(b.week) - extractWeekNumber(a.week));
     }
 
     currentReports.forEach((rep) => {
@@ -945,7 +958,7 @@ function isWednesday() {
 }
 
 function checkFormAvailability() {
-  if (!isWednesday()) {
+  if (1==2 && !isWednesday()) {
     document.getElementById('report-form').style.display = 'none';
     document.getElementById('form-closed-message').style.display = 'block';
   } else {

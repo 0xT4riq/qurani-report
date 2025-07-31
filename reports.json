@@ -64,7 +64,6 @@
     "hifz": false,
     "_id": "5b7af0b7-1358-45d4-882b-844f3ebd343f"
   },
-  
   {
     "_id": "6",
     "name": "سالم الهنائي",
@@ -168,6 +167,19 @@
     "murajaah": false,
     "tathbit": true,
     "hifz": false
+  },
+  {
+    "name": "أحمد بن سعيد",
+    "date": "2025-07-31",
+    "surah": "آل عمران",
+    "week": "الأسبوع 6",
+    "hadir": true,
+    "istighfar": true,
+    "salawat": true,
+    "murajaah": true,
+    "tathbit": true,
+    "hifz": true,
+    "read": true,
+    "_id": "3badde13-7eb4-4ca5-98de-49390489c503"
   }
-
 ]
