@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const app = express();
-
+const globalDataPath = path.join(__dirname, 'globalData.json');
 const PORT = 3000;
 
 // Middleware to parse JSON in POST requests
@@ -185,6 +185,35 @@ app.post('/api/register', (req, res) => {
 
   res.status(201).json({ success: true, message: 'تم التسجيل بنجاح. يرجى انتظار الموافقة.' });
 });
+
+app.get('/api/global-data', (req, res) => {
+  const filePath = path.join(__dirname,'globalData.json'); // ← عدل المسار حسب مكان الملف
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('فشل قراءة ملف globalData.json:', err);
+      return res.status(500).json({ error: 'فشل تحميل البيانات' });
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.send(data);
+  });
+});
+app.put('/api/global-data', (req, res) => {
+  const newData = req.body;
+
+  // ممكن تضيف تحقق هنا مثل التأكد من وجود الأسابيع والسور والتشيكليست
+  if (!newData.weeks || !newData.surahs || !newData.reportChecklist) {
+    return res.status(400).json({ error: 'بيانات غير كاملة' });
+  }
+
+  fs.writeFile(globalDataPath, JSON.stringify(newData, null, 2), (err) => {
+    if (err) {
+      console.error('فشل حفظ ملف globalData.json:', err);
+      return res.status(500).json({ error: 'فشل حفظ البيانات' });
+    }
+    res.json({ message: 'تم تحديث البيانات بنجاح' });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

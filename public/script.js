@@ -130,7 +130,19 @@ async function logout() {
   showLogin();
 }
 
+let globalData = {};
 
+async function loadGlobalData() {
+  try {
+    const response = await fetch('/api/global-data');
+    if (!response.ok) throw new Error('فشل تحميل globalData.json');
+    globalData = await response.json();
+    // ممكن بعدها تنادي دوال مثل: populateWeekOptions() وغيرها
+    populateFormOptions();
+  } catch (err) {
+    console.error('خطأ في تحميل globalData:', err);
+  }
+}
 // --- Report Management Functions ---
 async function submitReport() {
   if (!currentUser) {
@@ -140,13 +152,14 @@ async function submitReport() {
 
   const surah = document.getElementById('surahSelect').value;
   const week = document.getElementById('weekSelect').value;
+  /*
   const hadir = document.getElementById('hadir').checked;
   const istighfar = document.getElementById('istighfar').checked;
   const salawat = document.getElementById('salawat').checked;
   const murajaah = document.getElementById('murajaah').checked;
   const tathbit = document.getElementById('tathbit').checked;
   const hifz = document.getElementById('hifz').checked;
-
+  */
   if (!surah || !week) {
     alert('الرجاء اختيار السورة والأسبوع.');
     return;
@@ -157,14 +170,11 @@ async function submitReport() {
     date: new Date().toISOString().split('T')[0], // التاريخ اليوم YYYY-MM-DD
     surah,
     week,
-    hadir,
-    istighfar,
-    salawat,
-    murajaah,
-    tathbit,
-    hifz,
   };
-
+  globalData.reportChecklist.forEach(item => {
+    const checkbox = document.getElementById(item.id);
+    report[item.id] = checkbox ? checkbox.checked : false;
+  });
   try {
     const response = await fetch('/api/report', {
       method: 'POST',
@@ -186,7 +196,14 @@ async function submitReport() {
 
 
 
+function generateChecklistHtml(rep) {
+  if (!globalData || !globalData.reportChecklist) return '';
 
+  return globalData.reportChecklist.map(item => {
+    const checked = rep[item.id] ? '✅' : '❌';
+    return `<li>${item.label}: ${checked}</li>`;
+  }).join('');
+}
 // Global variable to hold fetched reports
 let currentReports = [];
 
@@ -204,12 +221,12 @@ async function displayMyReports() {
   const surahFilter = document.getElementById('myReportSurahFilter').value;
 
   try {
-        const params = {};
-        params.name = currentUser.name;
-        if (weekFilter) params.week = weekFilter;
-        if (surahFilter) params.surah = surahFilter;
+    const params = {};
+    params.name = currentUser.name;
+    if (weekFilter) params.week = weekFilter;
+    if (surahFilter) params.surah = surahFilter;
 
-        const query = new URLSearchParams(params).toString();
+    const query = new URLSearchParams(params).toString();
 
     const res = await fetch(`/api/reports?${query}`);
     if (!res.ok) throw new Error('فشل تحميل التقارير');
@@ -227,12 +244,7 @@ async function displayMyReports() {
       div.innerHTML = `
         <p><strong>${rep.name}</strong> - ${rep.week} - سورة ${rep.surah} (${rep.date})</p>
         <ul>
-          <li>حضور اللقاء الأسبوعي: ${rep.hadir ? '✅' : '❌'}</li>
-          <li>الاستغفار ١٠٠ مرة يوميًا: ${rep.istighfar ? '✅' : '❌'}</li>
-          <li>الصلاة على النبي ١٠٠ مرة يوميًا: ${rep.salawat ? '✅' : '❌'}</li>
-          <li>مراجعة الحفظ البعيد مرتان: ${rep.murajaah ? '✅' : '❌'}</li>
-          <li>تثبيت الحفظ القريب مرتان: ${rep.tathbit ? '✅' : '❌'}</li>
-          <li>حفظ المقرر الأسبوعي: ${rep.hifz ? '✅' : '❌'}</li>
+          ${generateChecklistHtml(rep)}
         </ul>
       `;
       container.appendChild(div);
@@ -275,12 +287,7 @@ async function displayReports() {
       div.innerHTML = `
         <p><strong>${rep.name}</strong> - ${rep.week} - سورة ${rep.surah} (${rep.date})</p>
         <ul>
-          <li>حضور اللقاء الأسبوعي: ${rep.hadir ? '✅' : '❌'}</li>
-          <li>الاستغفار ١٠٠ مرة يوميًا: ${rep.istighfar ? '✅' : '❌'}</li>
-          <li>الصلاة على النبي ١٠٠ مرة يوميًا: ${rep.salawat ? '✅' : '❌'}</li>
-          <li>مراجعة الحفظ البعيد مرتان: ${rep.murajaah ? '✅' : '❌'}</li>
-          <li>تثبيت الحفظ القريب مرتان: ${rep.tathbit ? '✅' : '❌'}</li>
-          <li>حفظ المقرر الأسبوعي: ${rep.hifz ? '✅' : '❌'}</li>
+          ${generateChecklistHtml(rep)}
         </ul>
         <div class="action-buttons">
           <button onclick="editReportForm('${rep._id}')">✏️ تعديل</button>
@@ -484,14 +491,7 @@ async function exportPDF(rep) {
     yPos += 15;
 
     // جدول الأعمال
-    const activities = [
-        { label: 'حضور اللقاء الأسبوعي', key: 'hadir' },
-        { label: 'الاستغفار ١٠٠ مرة يوميًا', key: 'istighfar' },
-        { label: 'الصلاة على النبي ١٠٠ مرة يوميًا', key: 'salawat' },
-        { label: 'مراجعة الحفظ البعيد مرتان', key: 'murajaah' },
-        { label: 'تثبيت الحفظ القريب مرتان', key: 'tathbit' },
-        { label: 'حفظ المقرر الأسبوعي', key: 'hifz' }
-    ];
+    const activities = globalData.reportChecklist;
 
     // تعيين أعمدة الجدول
     const col1X = xPosRight;           // العمود الأول: العمل (مائل يمين)
@@ -521,7 +521,7 @@ async function exportPDF(rep) {
 
     // محتوى الصفوف
     activities.forEach(act => {
-        const value = rep[act.key];
+        const value = rep[act.id];
         doc.text(act.label, col1X, yPos, { align: 'right' });
         if (value) {
             doc.text('نعم', col2X, yPos, { align: 'right' });
@@ -692,14 +692,7 @@ async function exportFilteredPDF(userType) {
         yPos += 12;
 
         // جدول الأعمال
-        const activities = [
-            { label: 'حضور اللقاء', key: 'hadir' },
-            { label: 'استغفار', key: 'istighfar' },
-            { label: 'صلاة على النبي', key: 'salawat' },
-            { label: 'مراجعة', key: 'murajaah' },
-            { label: 'تثبيت', key: 'tathbit' },
-            { label: 'حفظ', key: 'hifz' }
-        ];
+        const activities = globalData.reportChecklist;
 
         const col1X = xPosRight;
         const col2X = col1X - 60;
@@ -725,7 +718,7 @@ async function exportFilteredPDF(userType) {
 
         // محتوى الجدول
         activities.forEach(act => {
-            const value = rep[act.key];
+            const value = rep[act.id];
             doc.text(act.label, col1X, yPos, { align: 'right' });
             if (value) {
                 doc.text('نعم', col2X, yPos, { align: 'right' });
@@ -775,13 +768,13 @@ async function exportActivitySummaryPDF(allReports) {
     let yPos = lineY + 10;
 
     // === النشاطات والإحصاءات ===
-    const activities = [
-        { key: 'hadir', label: 'حضور اللقاء الأسبوعي' },
-        { key: 'istighfar', label: 'الاستغفار ١٠٠ مرة يوميًا' },
-        { key: 'salawat', label: 'الصلاة على النبي ١٠٠ مرة يوميًا' },
-        { key: 'murajaah', label: 'مراجعة الحفظ البعيد مرتان' },
-        { key: 'tathbit', label: 'تثبيت الحفظ القريب مرتان' },
-        { key: 'hifz', label: 'حفظ المقرر الأسبوعي' }
+    const activities = globalData?.reportChecklist || [
+        { id: 'hadir', label: 'حضور اللقاء الأسبوعي' },
+        { id: 'istighfar', label: 'الاستغفار ١٠٠ مرة يوميًا' },
+        { id: 'salawat', label: 'الصلاة على النبي ١٠٠ مرة يوميًا' },
+        { id: 'murajaah', label: 'مراجعة الحفظ البعيد مرتان' },
+        { id: 'tathbit', label: 'تثبيت الحفظ القريب مرتان' },
+        { id: 'hifz', label: 'حفظ المقرر الأسبوعي' }
     ];
     // حساب عدد الأسابيع الفريدة
     const uniqueWeeks = new Set(allReports.map(r => r.week));
@@ -790,14 +783,12 @@ async function exportActivitySummaryPDF(allReports) {
     const studentStats = {};
     allReports.forEach(rep => {
         if (!studentStats[rep.name]) {
-            studentStats[rep.name] = {
-                hadir: 0, istighfar: 0, salawat: 0,
-                murajaah: 0, tathbit: 0, hifz: 0,
-                total: 0
-            };
+            studentStats[rep.name] = {};
+            activities.forEach(act => studentStats[rep.name][act.id] = 0);
+            studentStats[rep.name].total = 0;
         }
         activities.forEach(act => {
-            if (rep[act.key]) studentStats[rep.name][act.key]++;
+            if (rep[act.id]) studentStats[rep.name][act.id]++;
         });
         studentStats[rep.name].total++;
     });
@@ -812,7 +803,7 @@ async function exportActivitySummaryPDF(allReports) {
         const sorted = Object.entries(studentStats)
             .map(([name, data]) => ({
                 name,
-                count: data[activity.key],
+                count: data[activity.id],
                 total: data.total
             }))
             .sort((a, b) => b.count - a.count);
@@ -1036,11 +1027,148 @@ function searchStudentPassword() {
     resultsDiv.appendChild(div);
   });
 }
+function populateFormOptions() {
+  // خيارات الأسابيع
+  const weekOptions = ['<option value="">جميع الأسابيع</option>'];
+  for (let i = 1; i <= globalData.weeks; i++) {
+    weekOptions.push(`<option>الأسبوع ${i}</option>`);
+  }
+  document.querySelectorAll('#weekSelect, #adminReportWeekFilter, #myReportWeekFilter')
+    .forEach(select => {
+      if (select) select.innerHTML = weekOptions.join('');
+    });
 
+  // خيارات السور
+  const surahOptions = ['<option value="">جميع السور</option>']
+    .concat(globalData.surahs.map(surah => `<option>${surah}</option>`));
+  document.querySelectorAll('#surahSelect, #adminReportSurahFilter, #myReportSurahFilter')
+    .forEach(select => {
+      if (select) select.innerHTML = surahOptions.join('');
+    });
+
+  // checklist
+  const checklistContainer = document.getElementById("reportChecklistContainer");
+  checklistContainer.innerHTML = ""; // مسح الموجود قبل إعادة التعبئة
+  globalData.reportChecklist.forEach(item => {
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="checkbox" id="${item.id}"> ${item.label}`;
+    checklistContainer.appendChild(label);
+  });
+}
+
+// فتح البوب آب وتحميل البيانات فيه
+function openGlobalDataEditor() {
+  // تأكد أن البيانات محملة (لو مش محملة، استدعي التحميل هنا)
+  if (!globalData.weeks) {
+    alert('لم يتم تحميل بيانات النظام بعد. حاول لاحقاً.');
+    return;
+  }
+
+  document.getElementById('globalDataPopup').style.display = 'block';
+
+  document.getElementById('adminWeeksInput').value = globalData.weeks;
+  document.getElementById('adminSurahsInput').value = globalData.surahs.join('\n');
+  renderChecklistAdmin();
+}
+
+// إغلاق البوب آب
+function closeGlobalDataEditor() {
+  document.getElementById('globalDataPopup').style.display = 'none';
+}
+
+// عرض قائمة التشيكليست في نافذة الادمن
+function renderChecklistAdmin() {
+  const container = document.getElementById('adminChecklistContainer');
+  container.innerHTML = '';
+  globalData.reportChecklist.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.style.marginBottom = '8px';
+    div.innerHTML = `
+      <input type="text" class="checklistId" placeholder="id" value="${item.id}" style="width: 100px;" />
+      <input type="text" class="checklistLabel" placeholder="label" value="${item.label}" style="width: calc(100% - 130px); margin-left: 5px;" />
+      <button onclick="removeChecklistItem(${index})" style="margin-left: 5px;">حذف</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// إضافة عنصر جديد لقائمة التشيكليست
+function addChecklistItem() {
+  if (!globalData.reportChecklist) globalData.reportChecklist = [];
+  globalData.reportChecklist.push({ id: '', label: '' });
+  renderChecklistAdmin();
+}
+
+// حذف عنصر من التشيكليست
+function removeChecklistItem(index) {
+  globalData.reportChecklist.splice(index, 1);
+  renderChecklistAdmin();
+}
+
+// جمع بيانات التشيكليست من الادمن
+function gatherChecklistFromAdmin() {
+  const ids = document.querySelectorAll('.checklistId');
+  const labels = document.querySelectorAll('.checklistLabel');
+  const checklist = [];
+  for (let i = 0; i < ids.length; i++) {
+    const idVal = ids[i].value.trim();
+    const labelVal = labels[i].value.trim();
+    if (idVal && labelVal) {
+      checklist.push({ id: idVal, label: labelVal });
+    }
+  }
+  return checklist;
+}
+
+// حفظ البيانات بعد التعديل (ارسال للسيرفر)
+async function saveGlobalData() {
+  const weeks = Number(document.getElementById('adminWeeksInput').value);
+  const surahs = document.getElementById('adminSurahsInput').value
+    .split('\n')
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+  const reportChecklist = gatherChecklistFromAdmin();
+
+  if (!weeks || weeks <= 0) {
+    alert('رجاءً أدخل عدد أسابيع صحيح.');
+    return;
+  }
+  if (surahs.length === 0) {
+    alert('رجاءً أدخل السور.');
+    return;
+  }
+
+  globalData.weeks = weeks;
+  globalData.surahs = surahs;
+  globalData.reportChecklist = reportChecklist;
+
+  try {
+    const response = await fetch('/api/global-data', {
+      method: 'PUT', // حسب ما سيرفرك يدعم
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(globalData),
+    });
+
+    if (!response.ok) throw new Error('فشل حفظ البيانات.');
+
+    alert('تم حفظ البيانات بنجاح.');
+    closeGlobalDataEditor();
+
+    // يمكن تعيد تحميل الخيارات في الواجهة
+    loadGlobalData();  // إذا عندك دالة لتحميل البيانات للواجهة
+
+  } catch (error) {
+    alert('حدث خطأ أثناء الحفظ: ' + error.message);
+  }
+}
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {
     checkFormAvailability();
     loadReports();
-    loadAccounts()
+    loadAccounts();
     showLogin(); 
+    loadGlobalData();
+    populateFormOptions();
+
+
 });
