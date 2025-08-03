@@ -181,5 +181,26 @@
     "hifz": true,
     "read": true,
     "_id": "3badde13-7eb4-4ca5-98de-49390489c503"
+  },
+  {
+    "name": "أحمد بن سعيد",
+    "date": "2025-08-03",
+    "surah": "آل عمران",
+    "week": "الأسبوع 9",
+    "hadir": true,
+    "hadir_note": "",
+    "istighfar": true,
+    "istighfar_note": "",
+    "salawat": true,
+    "salawat_note": "",
+    "murajaah": true,
+    "murajaah_note": "",
+    "tathbit": false,
+    "tathbit_note": "تجربة نظام الملاحظات",
+    "hifz": true,
+    "hifz_note": "",
+    "read": true,
+    "read_note": "",
+    "_id": "797e2ef0-5c86-453e-8a2e-a65e270092aa"
   }
 ]

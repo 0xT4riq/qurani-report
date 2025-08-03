@@ -14,7 +14,7 @@
     <h2>منصة قرآني - نبض حياتي</h2>
 
     <div id="login-box">
-      <label for="login-name">الاسم:</label>
+      <label for="login-name">الاسم الثلاثي:</label>
       <input type="text" id="login-name">
       <label for="login-password">كلمة المرور:</label>
       <input type="password" id="login-password">
@@ -24,16 +24,22 @@
 
     <div id="register-box" class="hidden">
         <h3>إنشاء حساب جديد</h3>
-        <label for="register-name">الاسم:</label>
+        <label for="register-name">الاسم الثلاثي:</label>
         <input type="text" id="register-name">
         <label for="register-password">كلمة المرور:</label>
         <input type="password" id="register-password">
+        <label for="joinedSurah">عند أي سورة انضممت؟</label>
+        <select id="joinedSurah" required>
+          <option value="">اختر سورة...</option>
+        </select>
         <button onclick="registerUser()">تسجيل</button>
         <button onclick="showLogin()">العودة لتسجيل الدخول</button>
     </div>
 
     <div id="report-box" class="hidden">
       <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
+
+
       <h3>تقرير الأسبوع</h3>
       <div id="form-closed-message" style="display: none; color: red;">
         النموذج متاح فقط يوم الأربعاء.

@@ -93,9 +93,10 @@ async function login() {
 async function registerUser() {
     const name = document.getElementById('register-name').value.trim();
     const password = document.getElementById('register-password').value.trim();
+    const joinedSurah = document.getElementById('joinedSurah').value.trim();
 
-    if (!name || !password) {
-        alert('الرجاء إدخال الاسم وكلمة المرور.');
+    if (!name || !password || !joinedSurah) {
+        alert(' الرجاء إدخال الاسم وكلمة المرور و السورة.');
         return;
     }
 
@@ -103,7 +104,7 @@ async function registerUser() {
         const response = await fetch('/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, password }),
+            body: JSON.stringify({ name, password, joinedSurah }),
         });
 
         if (!response.ok) {
@@ -165,15 +166,18 @@ async function submitReport() {
     return;
   }
 
+
   const report = {
     name: currentUser.name,
     date: new Date().toISOString().split('T')[0], // التاريخ اليوم YYYY-MM-DD
     surah,
     week,
   };
-  globalData.reportChecklist.forEach(item => {
+  const checklist = globalData.reportChecklist.forEach(item => {
     const checkbox = document.getElementById(item.id);
+    const note = document.getElementById(`${item.id}_note`);
     report[item.id] = checkbox ? checkbox.checked : false;
+    report[`${item.id}_note`] = note?.value || '';
   });
   try {
     const response = await fetch('/api/report', {
@@ -201,7 +205,8 @@ function generateChecklistHtml(rep) {
 
   return globalData.reportChecklist.map(item => {
     const checked = rep[item.id] ? '✅' : '❌';
-    return `<li>${item.label}: ${checked}</li>`;
+    const note = rep[`${item.id}_note`] ? ` — <em>${rep[`${item.id}_note`]}</em>` : '';
+    return `<li>${item.label}: ${checked}${note}</li>`;
   }).join('');
 }
 
@@ -1054,7 +1059,7 @@ function populateFormOptions() {
   // خيارات السور
   const surahOptions = ['<option value="">جميع السور</option>']
     .concat(globalData.surahs.map(surah => `<option>${surah}</option>`));
-  document.querySelectorAll('#surahSelect, #adminReportSurahFilter, #myReportSurahFilter')
+  document.querySelectorAll('#surahSelect, #adminReportSurahFilter, #myReportSurahFilter, #joinedSurah')
     .forEach(select => {
       if (select) select.innerHTML = surahOptions.join('');
     });
@@ -1063,15 +1068,27 @@ function populateFormOptions() {
   const checklistContainer = document.getElementById("reportChecklistContainer");
   checklistContainer.innerHTML = ""; // مسح الموجود قبل إعادة التعبئة
   globalData.reportChecklist.forEach(item => {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("checkbox-with-note");
+
     const label = document.createElement("label");
     label.innerHTML = `<input type="checkbox" id="${item.id}"> ${item.label}`;
-    checklistContainer.appendChild(label);
+
+    const note = document.createElement("input");
+    note.type = "text";
+    note.placeholder = "ملاحظة (اختياري، اترك الخانة فارغة في  حال عدم وجود ملاحظة)";
+    note.id = `${item.id}_note`;
+    note.classList.add("note-input");
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(note);
+    checklistContainer.appendChild(wrapper);
   });
+
 }
 
 // فتح البوب آب وتحميل البيانات فيه
 function openGlobalDataEditor() {
-  // تأكد أن البيانات محملة (لو مش محملة، استدعي التحميل هنا)
   if (!globalData.weeks) {
     alert('لم يتم تحميل بيانات النظام بعد. حاول لاحقاً.');
     return;

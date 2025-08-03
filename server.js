@@ -159,10 +159,10 @@ app.post('/api/login', (req, res) => {
   res.json(user);
 });
 app.post('/api/register', (req, res) => {
-  const { name, password } = req.body;
+  const { name, password, joinedSurah } = req.body;
 
-  if (!name || !password) {
-    return res.status(400).json({ success: false, message: 'الاسم وكلمة المرور مطلوبان.' });
+  if (!name || !password || !joinedSurah) {
+    return res.status(400).json({ success: false, message: 'الاسم وكلمة المرور و السورة مطلوب.' });
   }
 
   const accounts = readJSON('accounts.json');
@@ -176,6 +176,7 @@ app.post('/api/register', (req, res) => {
   const newUser = {
     name,
     password,
+    joinedSurah,
     approved: false,
     isAdmin: false
   };
