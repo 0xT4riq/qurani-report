@@ -3,24 +3,20 @@
     "name": "أحمد بن سعيد",
     "password": "123",
     "approved": true,
-    "isAdmin": false
+    "isAdmin": false,
+    "joinedSurah": "البقرة"
   },
   {
     "name": "سالم الهنائي",
     "password": "456",
     "approved": true,
-    "isAdmin": false
+    "isAdmin": false,
+    "joinedSurah": "الفاتحة"
   },
   {
     "name": "المشرف",
     "password": "admin",
     "approved": true,
     "isAdmin": true
-  },
-  {
-    "name": "طارق الحراصي",
-    "password": "12345678",
-    "approved": false,
-    "isAdmin": false
   }
 ]

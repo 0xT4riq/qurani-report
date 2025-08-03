@@ -344,7 +344,7 @@ function editReportForm(reportId) {
       <label><input type="checkbox" id="edit-hadir" ${rep.hadir ? 'checked' : ''}> حضور اللقاء الأسبوعي</label><br>
       <label><input type="checkbox" id="edit-istighfar" ${rep.istighfar ? 'checked' : ''}> الاستغفار ١٠٠ مرة يوميًا</label><br>
       <label><input type="checkbox" id="edit-salawat" ${rep.salawat ? 'checked' : ''}> الصلاة على النبي ١٠٠ مرة يوميًا</label><br>
-      <label><input type="checkbox" id="edit-murajaah" ${rep.murajaah ? 'checked' : ''}> مراجعة الحفظ البعيج مرتان</label><br>
+      <label><input type="checkbox" id="edit-murajaah" ${rep.murajaah ? 'checked' : ''}> مراجعة الحفظ البعيد مرتان</label><br>
       <label><input type="checkbox" id="edit-tathbit" ${rep.tathbit ? 'checked' : ''}> تثبيت الحفظ القريب مرتان</label><br>
       <label><input type="checkbox" id="edit-hifz" ${rep.hifz ? 'checked' : ''}> حفظ المقرر الأسبوعي</label><br>
     </div>
@@ -1076,7 +1076,7 @@ function populateFormOptions() {
 
     const note = document.createElement("input");
     note.type = "text";
-    note.placeholder = "ملاحظة (اختياري، اترك الخانة فارغة في  حال عدم وجود ملاحظة)";
+    note.placeholder = "ملاحظة (اترك الخانة فارغة في حال عدم وجود ملاحظة)";
     note.id = `${item.id}_note`;
     note.classList.add("note-input");
 
@@ -1190,6 +1190,38 @@ async function saveGlobalData() {
   } catch (error) {
     alert('حدث خطأ أثناء الحفظ: ' + error.message);
   }
+}
+async function showUserList() {
+  try {
+    const res = await fetch('/api/accounts');
+    if (!res.ok) throw new Error('فشل تحميل الحسابات');
+    const users = await res.json();
+
+    const container = document.getElementById('userList');
+    container.innerHTML = '';
+      const filteredUsers = users.filter(user => !user.isAdmin);
+    filteredUsers.forEach(user => {
+      const div = document.createElement('div');
+      div.style.marginBottom = '8px';
+
+      div.innerHTML = `
+        👤 <strong>${user.name}</strong> - انضم عند: ${user.joinedSurah || 'غير محدد'}
+        <button onclick="rejectAccount('${user.name}')" style="margin-right: 10px; color: red;">حذف</button>
+      `;
+
+
+      container.appendChild(div);
+    });
+
+    document.getElementById('userListPopup').style.display = 'block';
+
+  } catch (err) {
+    alert('حدث خطأ أثناء تحميل الحسابات.');
+    console.error(err);
+  }
+}
+function closeUserList() {
+  document.getElementById("userListPopup").style.display = "none";
 }
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {

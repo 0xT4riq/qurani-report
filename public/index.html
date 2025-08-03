@@ -76,8 +76,13 @@
       <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
       
       <button onclick="openPasswordPopup()">عرض كلمة مرور طالب</button>
+      <button onclick="showUserList()">إدارة حسابات الطلبة</button>
+      <div id="userListPopup" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000; max-width: 500px; direction: rtl;">
+        <h3>قائمة الحسابات</h3>
+        <div id="userList" style="max-height: 300px; overflow-y: auto;"></div>
+        <button onclick="closeUserList()">إغلاق</button>
+      </div>
 
-      
 
       <div id="passwordPopup" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000; max-width: 400px; direction: rtl;">
         <h3>بحث عن كلمة المرور</h3>
@@ -90,19 +95,7 @@
 
       <button onclick="openGlobalDataEditor()">تعديل بيانات النظام</button>
 
-      <div id="globalDataPopup" style="display:none; 
-        position: fixed; 
-        top: 10%; 
-        left: 50%; 
-        transform: translateX(-50%); 
-        background: white; 
-        border: 1px solid #ccc; 
-        padding: 20px; 
-        z-index: 2000; 
-        width: 90%; max-width: 600px; 
-        direction: rtl;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);">
-
+      <div id="globalDataPopup">
         <h3>تعديل بيانات النظام</h3>
 
         <label>عدد الأسابيع:</label>
@@ -112,7 +105,7 @@
         <textarea id="adminSurahsInput" rows="10" style="width: 100%;"></textarea>
 
         <label>قائمة المهام:</label>
-        <div id="adminChecklistContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 5px; margin-bottom: 10px;"></div>
+        <div id="adminChecklistContainer"></div>
         <button onclick="addChecklistItem()">+ إضافة بند جديد</button>
 
         <br/><br/>
