@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const webpush = require('web-push');
 const app = express();
 const globalDataPath = path.join(__dirname, 'globalData.json');
 const PORT = 3000;
@@ -213,6 +214,61 @@ app.put('/api/global-data', (req, res) => {
     }
     res.json({ message: 'تم تحديث البيانات بنجاح' });
   });
+});
+webpush.setVapidDetails(
+  'mailto:you@example.com',
+  'BOWP9TLniGm1C2pR7r9yCF4gWxlrxbTZqvCTX1lEK0n3hloeizZ_W3zPXxxkCzesiM788wtiedxG2Iq6VPlAQ64',
+  'k-5QT2A3zMm1tJyCHA7Q0ej5lmntj_VHY_H5bNOiTRQ'
+);
+
+app.post('/api/save-subscription', express.json(), async (req, res) => {
+  const subscription = req.body;
+  const subsPath = path.join(__dirname, 'subscriptions.json');
+  let subs = [];
+
+  if (fs.existsSync(subsPath)) {
+    subs = JSON.parse(fs.readFileSync(subsPath));
+  }
+
+  // تحقق إذا الاشتراك موجود مسبقًا
+  const exists = subs.find(sub => JSON.stringify(sub) === JSON.stringify(subscription));
+  if (!exists) {
+    subs.push(subscription);
+    fs.writeFileSync(subsPath, JSON.stringify(subs, null, 2));
+  }
+
+  // أرسل إشعار تجريبي مباشر لهذا الاشتراك فقط
+  try {
+    await webpush.sendNotification(subscription, JSON.stringify({
+      title: "✅ تم الاشتراك بنجاح!",
+      body: "سيصلك إشعار التذكير يوم الأربعاء بإذن الله.",
+      icon: "logo.png"
+    }));
+    res.status(201).json({ message: '✅ تم الحفظ وإرسال الإشعار' });
+  } catch (err) {
+    console.error('فشل الإشعار:', err);
+    res.status(500).json({ error: 'تم الحفظ، لكن فشل إرسال الإشعار' });
+  }
+});
+const cron = require('node-cron');
+const { sendWednesdayReminder } = require('./reminder');
+
+// الأربعاء - الساعة 9:00 صباحًا
+cron.schedule('0 9 * * 3', () => {
+  console.log('🔔 تذكير صباح الأربعاء');
+  sendWednesdayReminder();
+});
+
+// الأربعاء - الساعة 1:00 ظهرًا
+cron.schedule('0 13 * * 3', () => {
+  console.log('🔔 تذكير ظهر الأربعاء');
+  sendWednesdayReminder();
+});
+
+// الأربعاء - الساعة 8:00 مساءً
+cron.schedule('0 20 * * 3', () => {
+  console.log('🔔 تذكير مساء الأربعاء');
+  sendWednesdayReminder();
 });
 
 app.listen(PORT, () => {

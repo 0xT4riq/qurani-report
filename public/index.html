@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة قرآني - نبض حياتي</title>
+  <title>منصة-قرآني نبض حياتي</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <div style="text-align: center; margin: 1px 0;">
-      <img src="logo.png" alt="شعار منصة قرآني - نبض حياتي" width="200" height="200" />
+      <img src="logo.png" alt="شعار منصة-قرآني نبض حياتي" width="200" height="200" />
     </div>
-    <h2>منصة قرآني - نبض حياتي</h2>
+    <h2>منصة - قرآني نبض حياتي</h2>
 
     <div id="login-box">
       <label for="login-name">الاسم الثلاثي:</label>
@@ -39,6 +40,7 @@
     <div id="report-box" class="hidden">
       <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
 
+      <button onclick="subscribeToNotifications()" id="subscribeBtn" style="margin-top: 10px;">🔔 الاشتراك في التنبيهات الأسبوعية</button>
 
       <h3>تقرير الأسبوع</h3>
       <div id="form-closed-message" style="display: none; color: red;">

@@ -963,7 +963,7 @@ function isWednesday() {
 }
 
 function checkFormAvailability() {
-  if (1==2 && !isWednesday()) {
+  if (!isWednesday()) {
     document.getElementById('report-form').style.display = 'none';
     document.getElementById('form-closed-message').style.display = 'block';
   } else {
@@ -1223,6 +1223,38 @@ async function showUserList() {
 function closeUserList() {
   document.getElementById("userListPopup").style.display = "none";
 }
+async function subscribeToNotifications() {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        alert('⚠️ يجب السماح بالإشعارات للاشتراك.');
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.register('sw.js');
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: 'BOWP9TLniGm1C2pR7r9yCF4gWxlrxbTZqvCTX1lEK0n3hloeizZ_W3zPXxxkCzesiM788wtiedxG2Iq6VPlAQ64'
+      });
+
+      await fetch('/api/save-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(subscription)
+      });
+
+      alert('✅ تم الاشتراك في التنبيهات بنجاح');
+    } catch (err) {
+      console.error('فشل الاشتراك:', err);
+    }
+  } else {
+    alert('المتصفح لا يدعم الإشعارات.');
+  }
+}
+
+
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {
     checkFormAvailability();
