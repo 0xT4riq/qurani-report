@@ -1,7 +1,10 @@
 const express = require('express');
+const archiver = require('archiver');
 const fs = require('fs');
 const path = require('path');
 const webpush = require('web-push');
+const multer = require('multer');
+const unzipper = require('unzipper');
 const app = express();
 const globalDataPath = path.join(__dirname, 'globalData.json');
 const PORT = 3000;
@@ -271,6 +274,44 @@ cron.schedule('0 20 * * 3', () => {
   sendWednesdayReminder();
 });
 
+//backup endpoint
+app.get('/api/export-data', (req, res) => {
+  const archive = archiver('zip');
+  const zipName = `backup_${new Date().toISOString().split('T')[0]}.zip`;
+
+  res.attachment(zipName);
+  archive.pipe(res);
+
+  const files = ['accounts.json', 'reports.json', 'subscriptions.json', 'globalData.json'];
+  files.forEach(file => {
+    const filePath = path.join(__dirname, file);
+    if (fs.existsSync(filePath)) {
+      archive.file(filePath, { name: file });
+    }
+  });
+
+  archive.finalize();
+});
+const upload = multer({ dest: 'uploads/' });
+
+app.post('/api/import-data', upload.single('backup'), async (req, res) => {
+  const filePath = req.file.path;
+
+  try {
+    const directory = await unzipper.Open.file(filePath);
+    for (const file of directory.files) {
+      const dest = path.join(__dirname, file.path);
+      const writeStream = fs.createWriteStream(dest);
+      await new Promise(resolve => file.stream().pipe(writeStream).on('finish', resolve));
+    }
+
+    fs.unlinkSync(filePath); // delete uploaded zip after restore
+    res.json({ message: '✅ تم استرجاع البيانات بنجاح' });
+  } catch (err) {
+    console.error('استرجاع فشل:', err);
+    res.status(500).json({ error: 'فشل في استيراد البيانات' });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

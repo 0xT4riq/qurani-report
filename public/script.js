@@ -963,12 +963,17 @@ function isWednesday() {
 }
 
 function checkFormAvailability() {
-  if (!isWednesday()) {
-    document.getElementById('report-form').style.display = 'none';
-    document.getElementById('form-closed-message').style.display = 'block';
-  } else {
-    document.getElementById('report-form').style.display = 'block';
-    document.getElementById('form-closed-message').style.display = 'none';
+  const isOpen = isWednesday();
+
+  document.getElementById('report-form').style.display = 'block';
+  //document.getElementById('form-closed-message').style.display = isOpen ? 'none' : 'block';
+
+  const submitBtn = document.querySelector('#report-form button[onclick="submitReport()"]');
+  if (submitBtn) {
+    submitBtn.disabled = !isOpen;
+    submitBtn.style.opacity = isOpen ? '1' : '0.5';
+    submitBtn.style.cursor = isOpen ? 'pointer' : 'not-allowed';
+    submitBtn.textContent = isOpen ? 'إرسال التقرير' : '🕓 متاح فقط يوم الأربعاء';
   }
 }
 let accounts = [];

@@ -52,9 +52,7 @@
       <button onclick="subscribeToNotifications()" id="subscribeBtn" style="margin-top: 10px;">🔔 الاشتراك في التنبيهات الأسبوعية</button>
 
       <h3>تقرير الأسبوع</h3>
-      <div id="form-closed-message" style="display: none; color: red;">
-        النموذج متاح فقط يوم الأربعاء.
-      </div>
+ 
       <div id="report-form"style="display: none;">
         <label for="surahSelect">اختر السورة:</label>
         <select id="surahSelect">
@@ -123,6 +121,15 @@
         <button onclick="saveGlobalData()">حفظ التغييرات</button>
         <button onclick="closeGlobalDataEditor()" style="margin-left: 10px;">إغلاق</button>
       </div>
+      <h3>قسم المطور</h3>
+      <a href="/api/export-data" download>📤 تحميل نسخة احتياطية</a>
+
+      <!-- Import Form -->
+      <form id="importForm" method="POST" enctype="multipart/form-data" action="/api/import-data">
+        <input type="file" name="backup" accept=".zip" required />
+        <button type="submit">📥 استرجاع نسخة احتياطية</button>
+      </form>
+
 
       <h3>لوحة تحكم المشرف</h3>
       <h4>طلبات تسجيل الحساب:</h4>
