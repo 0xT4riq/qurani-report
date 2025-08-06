@@ -1199,7 +1199,13 @@ async function showUserList() {
 
     const container = document.getElementById('userList');
     container.innerHTML = '';
-      const filteredUsers = users.filter(user => !user.isAdmin);
+    const filteredUsers = users.filter(user => !user.isAdmin);
+
+    const countDiv = document.createElement('div');
+    countDiv.style.marginBottom = '10px';
+    countDiv.innerHTML = `📊 عدد الطلبة: <strong>${filteredUsers.length}</strong>`;
+    container.appendChild(countDiv);
+    
     filteredUsers.forEach(user => {
       const div = document.createElement('div');
       div.style.marginBottom = '8px';
