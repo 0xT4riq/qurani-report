@@ -1319,7 +1319,49 @@ navigator.serviceWorker.addEventListener('message', (event) => {
     loadNotifications(); // تحديث الواجهة
   }
 });
+function showUpdateForm() {
+  const user = currentUser
+  if (!user) return alert("لم يتم تسجيل الدخول!");
 
+  document.getElementById('update-username').value = user.name;
+  document.getElementById('update-password').value = user.password;
+
+  const form = document.getElementById('update-form');
+  form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+}
+
+function submitUpdate() {
+  const newName = document.getElementById('update-username').value;
+  const newPassword = document.getElementById('update-password').value;
+  const user = currentUser
+  if (!user) return alert("لم يتم تسجيل الدخول!");
+
+  fetch('/api/update-account', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      oldName: user.name,
+      newName,
+      newPassword
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("تم تحديث البيانات بنجاح!");
+      currentUser = {
+        ...currentUser,
+        name: newName,
+        password: newPassword
+      };
+      document.getElementById('update-form').style.display = 'none';
+    } else {
+      alert("خطأ: " + data.message);
+    }
+  });
+}
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {
     if ('serviceWorker' in navigator) {

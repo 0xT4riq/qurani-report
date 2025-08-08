@@ -4,6 +4,12 @@
     "password": "admin",
     "approved": true,
     "isAdmin": true
+  },
+  {
+    "name": "tariq",
+    "password": "4321",
+    "joinedSurah": "طه",
+    "approved": true,
+    "isAdmin": false
   }
-  
 ]

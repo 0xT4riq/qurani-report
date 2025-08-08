@@ -311,6 +311,29 @@ app.post('/api/import-data', upload.single('backup'), async (req, res) => {
     res.status(500).json({ error: 'فشل في استيراد البيانات' });
   }
 });
+
+app.post('/api/update-account', (req, res) => {
+  const { oldName, newName, newPassword } = req.body;
+
+  const accounts = JSON.parse(fs.readFileSync('accounts.json', 'utf-8'));
+
+  const user = accounts.find(u => u.name === oldName);
+  if (!user) {
+    return res.json({ success: false, message: 'المستخدم غير موجود' });
+  }
+
+  // تحديث الاسم وكلمة المرور فقط
+  user.name = newName;
+  user.password = newPassword;
+
+  fs.writeFileSync('accounts.json', JSON.stringify(accounts, null, 2), 'utf-8');
+
+  res.json({ success: true });
+});
+
+
+
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

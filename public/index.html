@@ -62,6 +62,22 @@
 
       <button onclick="subscribeToNotifications()" id="subscribeBtn" style="margin-top: 10px;">🔔 الاشتراك في التنبيهات الأسبوعية</button>
 
+      <div id="update-info-form"style="margin-top: 20px; padding: 10px;">
+      <button onclick="showUpdateForm()">✏️ تحديث المعلومات</button>
+      <div id="update-form" style="display: none; margin-top: 10px;">
+        <label for="update-username">اسم المستخدم:</label>
+        <input type="text" id="update-username" />
+
+        <label for="update-password">كلمة المرور:</label>
+        <input type="password" id="update-password" />
+
+        <button onclick="submitUpdate()">💾 حفظ التغييرات</button>
+      </div>
+      <hr>
+      </div>
+
+      
+
       <h3>تقرير الأسبوع</h3>
  
       <div id="report-form"style="display: none;">
@@ -93,8 +109,21 @@
     </div>
 
     <div id="admin-box" class="hidden">
-      <button onclick="sendTestNotification()" style="margin-top: 10px;">🔔 اختبار إشعار</button>
+      <button onclick="sendSWNotification()" style="margin-top: 10px;">🔔 اختبار إشعار</button>
 <script>
+  function sendSWNotification() {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.active.postMessage({
+        type: 'SHOW_NOTIFICATION',
+        title: '📢 إشعار تجريبي',
+        body: 'هذا إشعار من خلال Service Worker.',
+        icon: 'logo.png'
+      });
+    });
+  }
+}
+
 function sendTestNotification() {
   if ('Notification' in window && Notification.permission === 'granted') {
     // إشعار عبر API مباشرة (ليس من خلال Service Worker)
