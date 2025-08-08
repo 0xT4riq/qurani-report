@@ -240,7 +240,6 @@ app.post('/api/save-subscription', express.json(), async (req, res) => {
     fs.writeFileSync(subsPath, JSON.stringify(subs, null, 2));
   }
 
-  // أرسل إشعار تجريبي مباشر لهذا الاشتراك فقط
   try {
     await webpush.sendNotification(subscription, JSON.stringify({
       title: "✅ تم الاشتراك بنجاح!",

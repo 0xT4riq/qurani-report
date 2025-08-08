@@ -1264,7 +1264,61 @@ async function subscribeToNotifications() {
     alert('المتصفح لا يدعم الإشعارات.');
   }
 }
+function loadNotifications() {
+  const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+  const ul = document.getElementById('notifications-ul');
+  const count = document.getElementById('notification-count');
 
+  ul.innerHTML = '';
+  notifications.forEach(note => {
+    const li = document.createElement('li');
+    li.textContent = note;
+    ul.appendChild(li);
+  });
+
+  count.textContent = notifications.length > 0 ? `(${notifications.length})` : '';
+}
+
+function toggleNotificationList() {
+  const list = document.getElementById('notification-list');
+  list.style.display = list.style.display === 'none' ? 'block' : 'none';
+}
+
+function clearNotifications() {
+  // حذف من LocalStorage
+  localStorage.removeItem('notifications');
+
+  // حذف إشعارات النظام
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(registration => {
+      if (registration && registration.getNotifications) {
+        registration.getNotifications().then(notifications => {
+          notifications.forEach(notification => notification.close());
+        });
+      }
+    });
+  }
+  if ('clearAppBadge' in navigator) {
+    navigator.clearAppBadge();
+  }
+
+  // تحديث الواجهة
+  loadNotifications();
+}
+navigator.serviceWorker.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'new-notification') {
+    const message = event.data.payload;
+    const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+    notifications.push(message);
+    localStorage.setItem('notifications', JSON.stringify(notifications));
+
+    if ('setAppBadge' in navigator) {
+      navigator.setAppBadge(notifications.length);
+    }
+
+    loadNotifications(); // تحديث الواجهة
+  }
+});
 
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {

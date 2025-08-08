@@ -17,6 +17,17 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="notification-icon-container" style="position: fixed; top: 10px; left: 10px;">
+  <button onclick="toggleNotificationList()" id="notification-btn">
+    🔔 <span id="notification-count" style="color: red; font-weight: bold;"></span>
+  </button>
+  <div id="notification-list" style="display: none; background: white; border: 1px solid #ccc; padding: 10px; max-width: 300px;">
+    <ul id="notifications-ul"></ul>
+    <button onclick="clearNotifications()">مسح الكل</button>
+  </div>
+</div>
+
+
   <div class="container">
     <div style="text-align: center; margin: 1px 0;">
       <img src="logo.png" alt="شعار منصة-قرآني نبض حياتي" width="200" height="200" />
@@ -82,6 +93,38 @@
     </div>
 
     <div id="admin-box" class="hidden">
+      <button onclick="sendTestNotification()" style="margin-top: 10px;">🔔 اختبار إشعار</button>
+<script>
+function sendTestNotification() {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    // إشعار عبر API مباشرة (ليس من خلال Service Worker)
+    const notification = new Notification("📢 إشعار تجريبي", {
+      body: "هذا إشعار تجريبي لاختبار النظام.",
+      icon: "logo.png"
+    });
+
+    // تخزينه محلياً كما لو كان إشعار حقيقي
+    const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+    notifications.push("📢 إشعار تجريبي لاختبار النظام.");
+    localStorage.setItem('notifications', JSON.stringify(notifications));
+
+    if ('setAppBadge' in navigator) {
+      navigator.setAppBadge(notifications.length);
+    }
+
+    loadNotifications(); // تحديث الواجهة
+  } else {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        sendTestNotification(); // جرب مجددًا
+      } else {
+        alert("يجب السماح بالإشعارات لاختبارها.");
+      }
+    });
+  }
+}
+</script>
+
       <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
       
       <button onclick="openPasswordPopup()">عرض كلمة مرور طالب</button>
