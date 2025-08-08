@@ -190,6 +190,7 @@ async function submitReport() {
 
     const result = await response.json();
     alert(result.message || 'تم إرسال التقرير بنجاح.');
+    showNotification(`تم إرسال تقريرك بنجاح: ${report.week} - سورة ${report.surah}`);
     displayMyReports(); // إعادة تحميل التقارير
 
   } catch (error) {
@@ -1256,7 +1257,6 @@ async function subscribeToNotifications() {
         body: JSON.stringify(subscription)
       });
 
-      alert('✅ تم الاشتراك في التنبيهات بنجاح');
     } catch (err) {
       console.error('فشل الاشتراك:', err);
     }
