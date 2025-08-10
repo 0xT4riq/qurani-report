@@ -46,47 +46,47 @@ const showAdminBox = () => {
 
 // --- Authentication Functions ---
 async function login() {
-    const name = document.getElementById('login-name').value.trim();
-    const password = document.getElementById('login-password').value.trim();
+  const name = document.getElementById('login-name').value.trim();
+  const password = document.getElementById('login-password').value.trim();
 
-    if (!name || !password) {
-        alert('الرجاء إدخال الاسم وكلمة المرور.');
-        return;
-    }
+  if (!name || !password) {
+      alert('الرجاء إدخال الاسم وكلمة المرور.');
+      return;
+  }
 
-    try {
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, password }),
-        });
+  try {
+      const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, password }),
+      });
 
-        if (!response.ok) {
-            alert('مشكلة في الاتصال بالسيرفر.');
-            return;
-        }
+      if (!response.ok) {
+          alert('مشكلة في الاتصال بالسيرفر.');
+          return;
+      }
 
-        const user = await response.json();
+      const user = await response.json();
 
-        if (!user || !user.name) {
-            alert('معلومات الدخول غير صحيحة.');
-            return;
-        }
+      if (!user || !user.name) {
+          alert('معلومات الدخول غير صحيحة.');
+          return;
+      }
 
-        currentUser = user;
-
-        if (user.isAdmin) {
-            showAdminBox();
-        } else if (!user.approved) {
-            alert('حسابك في انتظار موافقة المشرف.');
-            logout();
-        } else {
-            showReportBox();
-        }
-    } catch (error) {
-        alert('خطأ في الاتصال بالسيرفر.');
-        console.error(error);
-    }
+      currentUser = user;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      if (user.isAdmin) {
+          showAdminBox();
+      } else if (!user.approved) {
+          alert('حسابك في انتظار موافقة المشرف.');
+          logout();
+      } else {
+          showReportBox();
+      }
+  } catch (error) {
+      alert('خطأ في الاتصال بالسيرفر.');
+      console.error(error);
+  }
 }
 
 
@@ -128,6 +128,7 @@ async function logout() {
     console.error('Logout failed', e);
   }
   currentUser = null;
+  localStorage.removeItem('currentUser');
   showLogin();
 }
 
@@ -1052,6 +1053,7 @@ function searchStudentPassword() {
   });
 }
 function populateFormOptions() {
+
   // خيارات الأسابيع
   const weekOptions = ['<option value="">جميع الأسابيع</option>'];
   for (let i = 1; i <= globalData.weeks; i++) {
@@ -1064,7 +1066,7 @@ function populateFormOptions() {
 
   // خيارات السور
   const surahOptions = ['<option value="">جميع السور</option>']
-    .concat(globalData.surahs.map(surah => `<option>${surah}</option>`));
+    .concat(Array.isArray(globalData.surahs) ? globalData.surahs.map(surah => `<option>${surah}</option>`) : []);
   document.querySelectorAll('#surahSelect, #adminReportSurahFilter, #myReportSurahFilter, #joinedSurah')
     .forEach(select => {
       if (select) select.innerHTML = surahOptions.join('');
@@ -1073,23 +1075,25 @@ function populateFormOptions() {
   // checklist
   const checklistContainer = document.getElementById("reportChecklistContainer");
   checklistContainer.innerHTML = ""; // مسح الموجود قبل إعادة التعبئة
-  globalData.reportChecklist.forEach(item => {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("checkbox-with-note");
+  if (Array.isArray(globalData.reportChecklist)) {
+    globalData.reportChecklist.forEach(item => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("checkbox-with-note");
 
-    const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" id="${item.id}"> ${item.label}`;
+      const label = document.createElement("label");
+      label.innerHTML = `<input type="checkbox" id="${item.id}"> ${item.label}`;
 
-    const note = document.createElement("input");
-    note.type = "text";
-    note.placeholder = "ملاحظة (اترك الخانة فارغة في حال عدم وجود ملاحظة)";
-    note.id = `${item.id}_note`;
-    note.classList.add("note-input");
+      const note = document.createElement("input");
+      note.type = "text";
+      note.placeholder = "ملاحظة (اترك الخانة فارغة في حال عدم وجود ملاحظة)";
+      note.id = `${item.id}_note`;
+      note.classList.add("note-input");
 
-    wrapper.appendChild(label);
-    wrapper.appendChild(note);
-    checklistContainer.appendChild(wrapper);
-  });
+      wrapper.appendChild(label);
+      wrapper.appendChild(note);
+      checklistContainer.appendChild(wrapper);
+    });
+  }
 
 }
 
@@ -1384,4 +1388,22 @@ document.addEventListener("DOMContentLoaded", () => {
     populateFormOptions();
 
 
+});
+document.addEventListener('DOMContentLoaded', () => {
+  const storedUser = localStorage.getItem('currentUser');
+  if (storedUser) {
+    currentUser = JSON.parse(storedUser);
+
+    if (currentUser.isAdmin) {
+      showAdminBox();
+    } else if (!currentUser.approved) {
+      alert('حسابك في انتظار موافقة المشرف.');
+      logout();
+    } else {
+      showReportBox();
+    }
+  } else {
+    // إذا ما في مستخدم مسجل دخول، تظهر شاشة تسجيل الدخول
+    showLogin();
+  }
 });
