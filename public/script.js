@@ -15,11 +15,11 @@ const showLogin = () => {
     document.getElementById('login-password').value = '';
 };
 
-const showRegister = () => {
+const showRegister = (prefillName = '', prefillPassword = '') => {
     document.getElementById('login-box').classList.add('hidden');
     document.getElementById('register-box').classList.remove('hidden');
-    document.getElementById('register-name').value = '';
-    document.getElementById('register-password').value = '';
+    if (prefillName) document.getElementById('register-name').value = prefillName;
+    if (prefillPassword) document.getElementById('register-password').value = prefillPassword;
 };
 
 const showReportBox = () => {
@@ -62,7 +62,10 @@ async function login() {
       });
 
       if (!response.ok) {
-          alert('مشكلة في الاتصال بالسيرفر.');
+          document.getElementById('register-name').value = name;
+          document.getElementById('register-password').value = password;
+          //alert('مشكلة في الاتصال بالسيرفر.');
+          showRegister(name, password);
           return;
       }
 
