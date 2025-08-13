@@ -6,13 +6,6 @@
     "isAdmin": true
   },
   {
-    "name": "هلال ناصر العامري",
-    "password": "12345",
-    "joinedSurah": "ص",
-    "approved": true,
-    "isAdmin": false
-  },
-  {
     "name": "يوسف الهاشمي",
     "password": "1234",
     "joinedSurah": "يس",
@@ -118,13 +111,6 @@
     "isAdmin": false
   },
   {
-    "name": "بدر بن حمد بن جمعه الهادي",
-    "password": "98922",
-    "joinedSurah": "يس",
-    "approved": true,
-    "isAdmin": false
-  },
-  {
     "name": "Behma2075",
     "password": "99049095",
     "joinedSurah": "الزمر",
@@ -134,6 +120,139 @@
   {
     "name": "سيف بدر سيف",
     "password": "99744793",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "راشد حمود سالم",
+    "password": "814914",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "أحمد سالم خميس الحمداني",
+    "password": "99133028",
+    "joinedSurah": "الصافات",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "يوسف محمد الطارشي",
+    "password": "541924",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "هلال ناصر عبدالله العامري",
+    "password": "12345",
+    "joinedSurah": "ص",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "يوسف بن أحمد بن جمعه الحمداني",
+    "password": "Yoy2003",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "محمد بن حسني بن مبارك الحراصي",
+    "password": "M99655312",
+    "joinedSurah": "ص",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "إلياس بدر حمد الهادي",
+    "password": "98922",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "خميس البدري",
+    "password": "k10509045s",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "المعتصم مبارك عبدالله العامري",
+    "password": "97561113",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "يحيى سعيد عبيد الحكماني",
+    "password": "98006030",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "محمد بن خالد بن سالم الحكماني",
+    "password": "ks92015181",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "علي سالم سعيد الدائري",
+    "password": "Oman2025@",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "علي سالم الدائري",
+    "password": "93597774",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "المعتصم بن مبارك بن عبدالله العامري",
+    "password": "97561113",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "عبدالمجيد عبدالله مبارك الحسني",
+    "password": "95308775",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "بدر خليفه زايد",
+    "password": "190082",
+    "joinedSurah": "ص",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "سلمان العبد الحسني",
+    "password": "٩٩٢٥٧٧٢٥",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "شهاب بن حمد بن سعيد",
+    "password": "96293044",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "خميس حافظ خميس البدري",
+    "password": "k10509045s",
     "joinedSurah": "الزمر",
     "approved": true,
     "isAdmin": false
