@@ -279,7 +279,7 @@ async function displayMyReports() {
 // Displays all reports for the admin, with search/filter
 async function displayReports() {
   const container = document.getElementById('reports-list');
-  container.innerHTML = '';
+  container.innerHTML = '<div class="loading">جاري التحميل...</div>';
 
   const nameFilter = document.getElementById('searchInput')?.value?.trim().toLowerCase() || '';
   const weekFilter = document.getElementById('adminReportWeekFilter')?.value || '';
@@ -297,35 +297,83 @@ async function displayReports() {
     currentReports = await response.json();
 
     if (currentReports.length === 0) {
-      container.innerHTML = '<p>لا توجد تقارير مطابقة للبحث أو المعايير المحددة.</p>';
+      container.innerHTML = '<div class="empty-state">لا توجد تقارير مطابقة للبحث أو المعايير المحددة.</div>';
       return;
     }
     if (!weekFilter) {
       currentReports.sort((a, b) => extractWeekNumber(b.week) - extractWeekNumber(a.week));
     }
 
-    currentReports.forEach((rep) => {
-      const div = document.createElement('div');
-      div.classList.add('report-section');
-      div.innerHTML = `
-        <p><strong>${rep.name}</strong> - ${rep.week} - سورة ${rep.surah} (${rep.date})</p>
+    const fragment = document.createDocumentFragment();
+
+  currentReports.forEach((rep, idx) => {
+      const section = document.createElement('div');
+      section.classList.add('report-section', 'collapsible-report');
+
+      // Header (clickable)
+      const header = document.createElement('div');
+      header.className = 'report-header';
+      header.tabIndex = 0;
+      header.setAttribute('role', 'button');
+      header.setAttribute('aria-expanded', 'false');
+      header.innerHTML = `
+        <strong>${rep.name}</strong> - ${rep.week} - سورة ${rep.surah}
+        <span class="report-date">(${formatArabicDate(rep.date)})</span>
+        <span class="dropdown-arrow">▼</span>
+      `;
+
+      // Details (hidden by default)
+      const details = document.createElement('div');
+      details.className = 'report-details';
+      details.style.display = 'none';
+      details.innerHTML = `
         <ul>
           ${generateChecklistHtml(rep)}
         </ul>
         <div class="action-buttons">
-          <button onclick="editReportForm('${rep._id}')">✏️ تعديل</button>
-          <button onclick="exportPDFById('${rep._id}')">📄 تحميل PDF</button>
+          <button aria-label="تعديل التقرير" onclick="editReportForm('${rep._id}')">✏️ تعديل</button>
+          <button aria-label="تحميل التقرير PDF" onclick="exportPDFById('${rep._id}')">📄 تحميل PDF</button>
+          <button aria-label="حذف التقرير" class="delete-btn" onclick="deleteReportById('${rep._id}')">🗑️ حذف</button>
         </div>
       `;
-      container.appendChild(div);
+
+      // Toggle logic
+      header.addEventListener('click', () => {
+        const expanded = header.getAttribute('aria-expanded') === 'true';
+        header.setAttribute('aria-expanded', String(!expanded));
+        details.style.display = expanded ? 'none' : 'block';
+        header.querySelector('.dropdown-arrow').textContent = expanded ? '▼' : '▲';
+      });
+
+      section.appendChild(header);
+      section.appendChild(details);
+      fragment.appendChild(section);
     });
 
+    container.innerHTML = '';
+    container.appendChild(fragment);
+
   } catch (error) {
-    container.innerHTML = `<p>حدث خطأ أثناء تحميل التقارير: ${error.message}</p>`;
+    container.innerHTML = `<div class="error-state">حدث خطأ أثناء تحميل التقارير: ${error.message}</div>`;
     console.error(error);
   }
 }
-
+// Helper to format date in Arabic
+function formatArabicDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+async function deleteReportById(reportId) {
+  if (!confirm('هل أنت متأكد أنك تريد حذف هذا التقرير؟')) return;
+  try {
+    const response = await fetch(`/api/reports/${reportId}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error('فشل حذف التقرير');
+    await displayReports();
+  } catch (error) {
+    alert('حدث خطأ أثناء حذف التقرير');
+    console.error(error);
+  }
+}
 // Show edit form for report with given ID
 function editReportForm(reportId) {
   const rep = currentReports.find(r => r._id === reportId);

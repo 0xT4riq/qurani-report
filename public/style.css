@@ -12,21 +12,38 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to bottom, #f1f5f9, #e0e7ef 80%);
+  background: linear-gradient(135deg, #f1f5f9 0%, #e0e7ef 100%);
+  background-attachment: fixed;
   margin: 0;
   padding: 0;
   direction: rtl;
   color: var(--text);
+  min-height: 100vh;
+  line-height: 1.7;
+  overflow-x: hidden;
 }
 
 .container {
   max-width: 900px;
   margin: 48px auto;
-  padding: 40px 28px;
-  background: #fff;
+  padding: 42px 32px;
+  background: rgba(255,255,255,0.92);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 32px rgba(30,41,59,0.10);
   transition: box-shadow 0.3s;
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  position: relative;
+  border: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+
+.container::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(var(--radius) - 1px);
+  background: linear-gradient(to bottom right, rgba(255,255,255,0.8), rgba(255,255,255,0.5));
+  z-index: -1;
 }
 
 h2, h3, h4 {
@@ -35,45 +52,76 @@ h2, h3, h4 {
   line-height: 1.3;
   font-weight: 700;
   letter-spacing: 0.01em;
+  position: relative;
+}
+input, select, textarea, button, .checkbox-group label, .report-section {
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
 }
 
 input, button, select, textarea {
   width: 100%;
   padding: 14px;
   margin: 12px 0 28px;
-  border: 1px solid var(--gray-border);
+  border: 1.5px solid var(--gray-border);
   border-radius: var(--radius);
   font-size: 1em;
   box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
   background: #f9fafb;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 1px 8px rgba(30,41,59,0.06);
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), 0 2px 8px rgba(30,41,59,0.10);
   background: #fff;
 }
+/* Improved shadow for inputs, selects, textareas */
+input, select, textarea {
+  box-shadow: 0 1px 4px rgba(30,41,59,0.06);
+}
 
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 2px var(--accent), 0 2px 8px rgba(30,41,59,0.10);
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--shadow);
+}
+
+.checkbox-group {
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.04);
+}
+
+#passwordPopup, #globalDataPopup, #userListPopup, .popup-box {
+  position: fixed;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(30,41,59,0.18);
+}
 button {
-  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
   color: #fff;
   border: none;
   cursor: pointer;
   font-weight: 600;
-  border-radius: var(--radius);
-  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(37,99,235,0.10);
   transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
   width: auto;
-  padding: 12px 28px;
+  padding: 12px 32px;
   margin: 0 6px 18px 0;
+  letter-spacing: 0.02em;
 }
 
 button:hover, button:focus {
-  background: linear-gradient(to right, var(--primary-dark), var(--primary));
-  box-shadow: 0 4px 16px rgba(37,99,235,0.12);
-  transform: translateY(-2px) scale(1.03);
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+  box-shadow: 0 4px 20px rgba(37,99,235,0.15);
+  transform: translateY(-2px) scale(1.04);
 }
 
 button:active {
@@ -86,7 +134,7 @@ button:active {
 }
 
 .logout-btn:hover {
-  background: #dc2626;
+  background: #b91c1c;
 }
 
 label {
@@ -100,45 +148,47 @@ label {
   background: var(--gray-bg);
   border: 1.5px solid var(--gray-border);
   border-radius: var(--radius);
-  padding: 18px 14px;
+  padding: 22px 18px;
   margin-bottom: 24px;
   max-height: 400px;
   overflow-y: auto;
-  box-shadow: 0 1px 4px rgba(30,41,59,0.04);
+  box-shadow: 0 1px 8px rgba(30,41,59,0.04);
 }
 
 .checkbox-group label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 8px;
-  margin-bottom: 8px;
+  gap: 10px;
+  padding: 10px 10px;
+  margin-bottom: 10px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s, border 0.2s;
+  transition: background 0.2s, border 0.2s, box-shadow 0.2s;
   font-weight: 500;
   color: var(--text);
   border: 1px solid transparent;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.03);
 }
 
 .checkbox-group label:hover {
-  background: #e0e7ef;
+  background: #f3f6fa;
   border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(30,41,59,0.07);
 }
 
 .checkbox-group input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   accent-color: var(--primary);
-  border-radius: 5px;
-  border: 1px solid var(--gray-border);
+  border-radius: 6px;
+  border: 1.5px solid var(--gray-border);
   transition: box-shadow 0.2s;
-}
 
+}
 .checkbox-group input[type="checkbox"]:focus {
   outline: none;
-  box-shadow: 0 0 6px 2px var(--accent);
+  box-shadow: 0 0 8px 2px var(--accent);
 }
 
 .checkbox-group input[type="checkbox"]:checked + span {
@@ -178,14 +228,54 @@ label {
 .hidden {
   display: none;
 }
-
+.collapsible-report {
+  margin-bottom: 18px;
+  border: 1px solid var(--gray-border);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(30,41,59,0.04);
+  overflow: hidden;
+}
+.report-header {
+  cursor: pointer;
+  padding: 18px 22px;
+  font-size: 1.08em;
+  background: #f3f6fa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s;
+  outline: none;
+}
+.report-header:focus, .report-header:hover {
+  background: #e9fbe5;
+}
+.dropdown-arrow {
+  font-size: 1.2em;
+  margin-right: 12px;
+  color: var(--primary-dark);
+}
+.report-details {
+  padding: 18px 28px 18px 18px;
+  background: #fff;
+  border-top: 1px solid var(--gray-border);
+  animation: fadeIn 0.3s;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px);}
+  to { opacity: 1; transform: translateY(0);}
+}
 .report-section {
   margin-bottom: 24px;
-  padding: 18px;
+  padding: 22px;
   background: #f8fafc;
   border-left: 5px solid var(--primary-dark);
   border-radius: var(--radius);
-  box-shadow: 0 2px 8px rgba(30,41,59,0.03);
+  box-shadow: 0 2px 12px rgba(30,41,59,0.04);
+  transition: box-shadow 0.2s;
+}
+.report-section:hover {
+  box-shadow: 0 4px 24px rgba(30,41,59,0.08);
 }
 
 .report-section ul {
@@ -258,11 +348,13 @@ label {
   font-weight: 600;
 }
 
+/* Replace the existing popup styling with this */
 #passwordPopup, #globalDataPopup, #userListPopup {
   display: none;
   position: fixed;
   left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   background: #fff;
   border-radius: var(--radius);
   padding: 28px 24px;
@@ -270,7 +362,6 @@ label {
   z-index: 1000;
   max-width: 420px;
   width: 92%;
-  top: 14%;
   box-sizing: border-box;
 }
 
@@ -440,8 +531,8 @@ label {
 /* Responsive */
 @media (max-width: 700px) {
   .container {
-    margin: 16px;
-    padding: 16px;
+    margin: 8px;
+    padding: 10px;
   }
   .filter-print-section {
     flex-direction: column;
@@ -449,6 +540,9 @@ label {
     gap: 10px;
   }
   #globalDataPopup, #userListPopup, .popup-box {
-    padding: 12px 6px;
+    padding: 10px 2px;
+  }
+  h2, h3, h4 {
+    font-size: 1.1em;
   }
 }

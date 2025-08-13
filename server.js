@@ -135,7 +135,19 @@ app.put('/api/reports/:id', (req, res) => {
   writeJSON('reports.json', reports);
   res.json({ success: true, message: 'Report updated successfully' });
 });
+app.delete('/api/reports/:id', (req, res) => {
+  const id = req.params.id;
+  let reports = readJSON('reports.json');
+  const index = reports.findIndex(r => r._id === id);
 
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: 'Report not found' });
+  }
+
+  reports.splice(index, 1);
+  writeJSON('reports.json', reports);
+  res.json({ success: true, message: 'Report deleted successfully' });
+});
 const { v4: uuidv4 } = require('uuid'); // Install uuid package
 
 // In POST /api/report:
