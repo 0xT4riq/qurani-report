@@ -8,6 +8,25 @@ const unzipper = require('unzipper');
 const app = express();
 const globalDataPath = path.join(__dirname, 'globalData.json');
 const PORT = 3000;
+const { google } = require('googleapis');
+const FOLDER_ID = "1ihRvTA6DijeOc-QUqfjzEjgliWepIXX1"; // only the ID, not the full URL
+const CREDENTIALS = JSON.parse(fs.readFileSync('credentials.json'));
+const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
+
+const CLIENT_ID = '142742480340-cue4k3r47a81su0qa9k2mcejerir18uc.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
+const REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'; // or 'http://localhost' if you want redirect
+const REFRESH_TOKEN = '1//034h-qUPViMQ9CgYIARAAGAMSNgF-L9IrI1Bn-rqLvrsaYrM-826X6rWrcBgexUb_3K0C7gLH75njI7GK94S7j9Kxm-6xX0mzHg';
+
+const oAuth2Client = new google.auth.OAuth2(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URI
+);
+
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
 // Middleware to parse JSON in POST requests
 app.use(express.json());
@@ -329,6 +348,37 @@ app.post('/api/update-account', (req, res) => {
   fs.writeFileSync('accounts.json', JSON.stringify(accounts, null, 2), 'utf-8');
 
   res.json({ success: true });
+});
+async function uploadFileToDrive(filePath) {
+  try {
+    const fileName = `${path.basename(filePath)}-${new Date().toISOString()}`;
+    const res = await drive.files.create({
+      requestBody: {
+        name: fileName,
+        parents: [FOLDER_ID],
+      },
+      media: {
+        mimeType: "application/json",
+        body: fs.createReadStream(filePath),
+      },
+    });
+    console.log(`✅ Uploaded: ${fileName} (ID: ${res.data.id})`);
+  } catch (err) {
+    console.error(`❌ Failed to upload ${filePath}:`, err.message);
+  }
+}
+cron.schedule('* * * * *', async () => {
+  console.log('⏳ Starting daily backup:', new Date());
+  const files = ['globalData.json', 'accounts.json', 'reports.json', 'subscriptions.json'];
+
+  for (const file of files) {
+    const filePath = path.join(__dirname, file);
+    if (fs.existsSync(filePath)) {
+      await uploadFileToDrive(filePath);
+    }
+  }
+
+  console.log('✅ Backup completed');
 });
 
 
