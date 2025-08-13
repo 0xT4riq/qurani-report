@@ -43,7 +43,56 @@ const showAdminBox = () => {
     displayReports(); // Show all reports for admin
     displayAccountRequests(); // Show pending account requests
 };
+let allAccountNames = [];
 
+async function loadNameSuggestions() {
+  try {
+    const response = await fetch('/api/accounts');
+    if (!response.ok) return;
+    const accounts = await response.json();
+    allAccountNames = accounts
+      .filter(acc => !acc.isAdmin) // Exclude admin accounts
+      .map(acc => acc.name)
+      .filter(name => name && name.trim() !== '');
+  } catch (e) {
+    allAccountNames = [];
+  }
+}
+
+// Call this once on page load
+document.addEventListener('DOMContentLoaded', loadNameSuggestions);
+function showNameSuggestions() {
+  const input = document.getElementById('login-name');
+  const listDiv = document.getElementById('custom-suggestions');
+  const value = input.value.trim();
+  listDiv.innerHTML = '';
+  if (!value) return;
+
+  const matches = allAccountNames.filter(name =>
+    name.includes(value)
+  ).slice(0, 7); // Show up to 7 suggestions
+
+  if (matches.length === 0) return;
+
+  const ul = document.createElement('ul');
+  matches.forEach(name => {
+    const li = document.createElement('li');
+    li.textContent = name;
+    li.onclick = () => {
+      input.value = name;
+      listDiv.innerHTML = '';
+    };
+    ul.appendChild(li);
+  });
+  listDiv.appendChild(ul);
+}
+
+// Hide suggestions after a short delay to allow click
+function hideNameSuggestionsDelayed() {
+  setTimeout(() => {
+    document.getElementById('custom-suggestions').innerHTML = '';
+  }, 150);
+}
 // --- Authentication Functions ---
 async function login() {
   const name = document.getElementById('login-name').value.trim();
@@ -64,8 +113,7 @@ async function login() {
       if (!response.ok) {
           document.getElementById('register-name').value = name;
           document.getElementById('register-password').value = password;
-          //alert('مشكلة في الاتصال بالسيرفر.');
-          showRegister(name, password);
+          alert('تأكد من صحة الاسم او كلمة المرور.');
           return;
       }
 
@@ -313,7 +361,7 @@ async function displayReports() {
     countDiv.style.color = 'var(--primary-dark)';
     countDiv.textContent = `عدد التقارير المعروضة: ${currentReports.length}`;
     fragment.appendChild(countDiv);
-    
+
   currentReports.forEach((rep, idx) => {
       const section = document.createElement('div');
       section.classList.add('report-section', 'collapsible-report');

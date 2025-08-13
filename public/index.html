@@ -35,8 +35,11 @@
     <h2>منصة - قرآني نبض حياتي</h2>
 
     <div id="login-box">
-      <label for="login-name">الاسم الثلاثي:</label>
-      <input type="text" id="login-name">
+      <label for="login-name" >الاسم الثلاثي:</label>
+      <input type="text" id="login-name" autocomplete="off" oninput="showNameSuggestions()" onblur="hideNameSuggestionsDelayed()">
+      <div id="custom-suggestions"class="suggestions-list">
+
+      </div>
       <label for="login-password">كلمة المرور:</label>
       <input type="password" id="login-password">
       <button onclick="login()">دخول</button>
