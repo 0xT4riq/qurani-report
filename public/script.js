@@ -1240,7 +1240,7 @@ async function showUserList() {
 
       div.innerHTML = `
         👤 <strong>${user.name}</strong> - انضم عند: ${user.joinedSurah || 'غير محدد'}
-        <button onclick="rejectAccount('${user.name}')" style="margin-right: 10px; color: red;">حذف</button>
+        <button onclick="rejectAccount('${user.name}')" style="margin-right: 10px; color: white;">حذف</button>
       `;
 
 

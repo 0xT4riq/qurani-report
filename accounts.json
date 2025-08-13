@@ -34,16 +34,107 @@
     "isAdmin": false
   },
   {
-    "name": "مهنا بن علي بن محمد الحسني",
-    "password": "98700199",
+    "name": "علي سالم مصبح الحمداني",
+    "password": "99112538",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "اسعد خليفه الخميسي",
+    "password": "123456789",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "أحمد مبارك سالم الفارسي",
+    "password": "99002330",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "خالد ناصر علي الحمداني",
+    "password": "12355",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "سعيد سالم الحكماني",
+    "password": "gopvut-4qobVo-cywzen",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "جمعه سالم سعيد الدائري",
+    "password": "99553935",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "سالم جمعه سالم الدائري",
+    "password": "salim2013",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "حازم دين محمد البلوشي",
+    "password": "92676605",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "Ahmed nasser salim",
+    "password": "asdfghjkl",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "بدر حمد جمعه الهادي",
+    "password": "98922",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "محمد ثاني الطارشي",
+    "password": "95431200",
+    "joinedSurah": "ص",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "وليد بن سعيد بن محمد الشماخي",
+    "password": "١١٣٣",
     "joinedSurah": "الصافات",
     "approved": true,
     "isAdmin": false
   },
   {
-    "name": "علي سالم مصبح الحمداني",
-    "password": "99112538",
+    "name": "بدر بن حمد بن جمعه الهادي",
+    "password": "98922",
     "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "Behma2075",
+    "password": "99049095",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "سيف بدر سيف",
+    "password": "99744793",
+    "joinedSurah": "الزمر",
     "approved": true,
     "isAdmin": false
   }
