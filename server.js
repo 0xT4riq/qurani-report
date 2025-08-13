@@ -9,14 +9,14 @@ const app = express();
 const globalDataPath = path.join(__dirname, 'globalData.json');
 const PORT = 3000;
 const { google } = require('googleapis');
-const FOLDER_ID = "1ihRvTA6DijeOc-QUqfjzEjgliWepIXX1"; // only the ID, not the full URL
 const CREDENTIALS = JSON.parse(fs.readFileSync('credentials.json'));
 const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
 
-const CLIENT_ID = '142742480340-cue4k3r47a81su0qa9k2mcejerir18uc.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
-const REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'; // or 'http://localhost' if you want redirect
-const REFRESH_TOKEN = '1//034h-qUPViMQ9CgYIARAAGAMSNgF-L9IrI1Bn-rqLvrsaYrM-826X6rWrcBgexUb_3K0C7gLH75njI7GK94S7j9Kxm-6xX0mzHg';
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const FOLDER_ID = process.env.FOLDER_ID;
 
 const oAuth2Client = new google.auth.OAuth2(
   CLIENT_ID,
@@ -367,7 +367,7 @@ async function uploadFileToDrive(filePath) {
     console.error(`❌ Failed to upload ${filePath}:`, err.message);
   }
 }
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 3 * * *', async () => {
   console.log('⏳ Starting daily backup:', new Date());
   const files = ['globalData.json', 'accounts.json', 'reports.json', 'subscriptions.json'];
 
