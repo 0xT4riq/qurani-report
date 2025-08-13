@@ -109,51 +109,6 @@
     </div>
 
     <div id="admin-box" class="hidden">
-      <button onclick="sendSWNotification()" style="margin-top: 10px;">🔔 اختبار إشعار</button>
-<script>
-  function sendSWNotification() {
-  if ('serviceWorker' in navigator && 'PushManager' in window) {
-    navigator.serviceWorker.ready.then(registration => {
-      registration.active.postMessage({
-        type: 'SHOW_NOTIFICATION',
-        title: '📢 إشعار تجريبي',
-        body: 'هذا إشعار من خلال Service Worker.',
-        icon: 'logo.png'
-      });
-    });
-  }
-}
-
-function sendTestNotification() {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    // إشعار عبر API مباشرة (ليس من خلال Service Worker)
-    const notification = new Notification("📢 إشعار تجريبي", {
-      body: "هذا إشعار تجريبي لاختبار النظام.",
-      icon: "logo.png"
-    });
-
-    // تخزينه محلياً كما لو كان إشعار حقيقي
-    const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-    notifications.push("📢 إشعار تجريبي لاختبار النظام.");
-    localStorage.setItem('notifications', JSON.stringify(notifications));
-
-    if ('setAppBadge' in navigator) {
-      navigator.setAppBadge(notifications.length);
-    }
-
-    loadNotifications(); // تحديث الواجهة
-  } else {
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        sendTestNotification(); // جرب مجددًا
-      } else {
-        alert("يجب السماح بالإشعارات لاختبارها.");
-      }
-    });
-  }
-}
-</script>
-
       <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
       
       <button onclick="openPasswordPopup()">عرض كلمة مرور طالب</button>

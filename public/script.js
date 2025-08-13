@@ -1213,11 +1213,26 @@ async function showUserList() {
     const container = document.getElementById('userList');
     container.innerHTML = '';
     const filteredUsers = users.filter(user => !user.isAdmin);
+    filteredUsers.sort((a, b) => {
+      const isEnglishA = /^[A-Za-z]/.test(a.name);
+      const isEnglishB = /^[A-Za-z]/.test(b.name);
 
+      if (isEnglishA && !isEnglishB) return -1; // A is English, B is Arabic → A first
+      if (!isEnglishA && isEnglishB) return 1;  // B is English, A is Arabic → B first
+
+      // If both are same type, compare naturally
+      return a.name.localeCompare(b.name, 'ar'); // 'ar' for proper Arabic order
+    });
     const countDiv = document.createElement('div');
+    countDiv.style.position = 'sticky';
+    countDiv.style.top = '0';
+    countDiv.style.background = '#fff';
+    countDiv.style.padding = '10px';
+    countDiv.style.zIndex = '100';
+    countDiv.style.borderBottom = '1px solid #ccc';
     countDiv.style.marginBottom = '10px';
     countDiv.innerHTML = `📊 عدد الطلبة: <strong>${filteredUsers.length}</strong>`;
-    container.appendChild(countDiv);
+    container.prepend(countDiv);
     
     filteredUsers.forEach(user => {
       const div = document.createElement('div');
