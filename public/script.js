@@ -305,7 +305,15 @@ async function displayReports() {
     }
 
     const fragment = document.createDocumentFragment();
-
+        // Display the number of reports above the list
+    const countDiv = document.createElement('div');
+    countDiv.className = 'reports-count';
+    countDiv.style.margin = '16px 0 24px 0';
+    countDiv.style.fontWeight = 'bold';
+    countDiv.style.color = 'var(--primary-dark)';
+    countDiv.textContent = `عدد التقارير المعروضة: ${currentReports.length}`;
+    fragment.appendChild(countDiv);
+    
   currentReports.forEach((rep, idx) => {
       const section = document.createElement('div');
       section.classList.add('report-section', 'collapsible-report');

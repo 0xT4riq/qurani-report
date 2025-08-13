@@ -256,5 +256,12 @@
     "joinedSurah": "الزمر",
     "approved": true,
     "isAdmin": false
+  },
+  {
+    "name": "خالد سليمان البرطماني",
+    "password": "99722455",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
   }
 ]

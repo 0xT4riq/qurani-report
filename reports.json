@@ -523,5 +523,26 @@
     "read": false,
     "read_note": "",
     "_id": "d3c9dd6b-b7b5-4552-8006-2901cff3dc77"
+  },
+  {
+    "name": "أحمد سالم خميس الحمداني",
+    "date": "2025-08-13",
+    "surah": "الصافات",
+    "week": "الأسبوع 1",
+    "hadir": false,
+    "hadir_note": "",
+    "istighfar": true,
+    "istighfar_note": "",
+    "salawat": true,
+    "salawat_note": "",
+    "murajaah": true,
+    "murajaah_note": "",
+    "tathbit": true,
+    "tathbit_note": "",
+    "hifz": false,
+    "hifz_note": "",
+    "read": true,
+    "read_note": "",
+    "_id": "3920cf7b-713b-4c0a-af80-7c9be08ab9df"
   }
 ]
