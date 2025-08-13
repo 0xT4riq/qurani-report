@@ -116,7 +116,7 @@ async function registerUser() {
             return;
         }
 
-        alert('✅ تم تسجيل حسابك بنجاح. في انتظار موافقة المشرف.');
+        //alert('✅ تم تسجيل حسابك بنجاح. في انتظار موافقة المشرف.');
         showLogin();
     } catch (error) {
         alert('خطأ في الاتصال بالسيرفر.');

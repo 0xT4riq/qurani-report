@@ -1,3 +1,23 @@
 [
-  
+  {
+    "name": "أيمن سالم حمد المالكي",
+    "date": "2025-08-13",
+    "surah": "الزمر",
+    "week": "الأسبوع 1",
+    "hadir": true,
+    "hadir_note": "",
+    "istighfar": true,
+    "istighfar_note": "",
+    "salawat": true,
+    "salawat_note": "",
+    "murajaah": false,
+    "murajaah_note": "",
+    "tathbit": false,
+    "tathbit_note": "",
+    "hifz": true,
+    "hifz_note": "",
+    "read": false,
+    "read_note": "",
+    "_id": "0166a706-33c7-4df8-938f-4694749286a2"
+  }
 ]

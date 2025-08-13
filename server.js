@@ -200,14 +200,14 @@ app.post('/api/register', (req, res) => {
     name,
     password,
     joinedSurah,
-    approved: false,
+    approved: true,
     isAdmin: false
   };
 
   accounts.push(newUser);
   writeJSON('accounts.json', accounts);
 
-  res.status(201).json({ success: true, message: 'تم التسجيل بنجاح. يرجى انتظار الموافقة.' });
+  res.status(201).json({ success: true, message: 'تم التسجيل بنجاح.' });
 });
 
 app.get('/api/global-data', (req, res) => {

@@ -6,9 +6,44 @@
     "isAdmin": true
   },
   {
-    "name": "tariq",
-    "password": "4321",
-    "joinedSurah": "طه",
+    "name": "هلال ناصر العامري",
+    "password": "12345",
+    "joinedSurah": "ص",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "يوسف الهاشمي",
+    "password": "1234",
+    "joinedSurah": "يس",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "أيمن سالم حمد المالكي",
+    "password": "92767234",
+    "joinedSurah": "الزمر",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "مهنا علي محمد الحسني",
+    "password": "98700199",
+    "joinedSurah": "الصافات",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "مهنا بن علي بن محمد الحسني",
+    "password": "98700199",
+    "joinedSurah": "الصافات",
+    "approved": true,
+    "isAdmin": false
+  },
+  {
+    "name": "علي سالم مصبح الحمداني",
+    "password": "99112538",
+    "joinedSurah": "يس",
     "approved": true,
     "isAdmin": false
   }

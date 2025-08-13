@@ -6,5 +6,13 @@
       "auth": "2-VjrKlSYrnwpbtUFlUt1A",
       "p256dh": "BI8DXdokYGEkZLXcrXxVsOmm26DVtyfCCrdVlKAVJ6GCpxF2EHcqdclum3IVYYAp-lJ55JX0EzcrGK1upn0RwKY"
     }
+  },
+  {
+    "endpoint": "https://updates.push.services.mozilla.com/wpush/v2/gAAAAABonFNB1dpAXrCmvVIjLM5jBDCJmMwzt-uZ7DCrDWV7FBgdC1EK0E1GJ2sVV63ek_c2sPizNGTPcuQLUmngsmstQ8aIffcLjWXyOJdSNLGq9y-aJz5Zs9O4gHdGu8ic0fknAcVfHYaufuKqfsZOSYdGMtLO7DKzaOSQQBkEWkyUxH_KgPY",
+    "expirationTime": null,
+    "keys": {
+      "auth": "ZiLJkum-pBR-7N5n7gT92A",
+      "p256dh": "BLNCmORZgfk0gpSuhhUXcCqURND8H5bkblgWOtnwmQhZicOMHBE0lTFEa2dLnPUTt3TNGqmcGCvY9grclbLcpvs"
+    }
   }
 ]
