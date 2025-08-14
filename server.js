@@ -117,6 +117,17 @@ app.get('/api/reports', (req, res) => {
 
   res.json(reports);
 });
+app.get('/api/report-exists', (req, res) => {
+  const { name, week, surah } = req.query;
+  if (!name || !week || !surah) {
+    return res.status(400).json({ exists: false, message: 'Missing parameters' });
+  }
+  const reports = readJSON('reports.json');
+  const exists = reports.some(r =>
+    r.name === name && r.week === week && r.surah === surah
+  );
+  res.json({ exists });
+});
 
 app.put('/api/reports/:id', (req, res) => {
   const id = req.params.id;

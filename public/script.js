@@ -86,6 +86,7 @@ function showNameSuggestions() {
   });
   listDiv.appendChild(ul);
 }
+window.showNameSuggestions = showNameSuggestions;
 
 // Hide suggestions after a short delay to allow click
 function hideNameSuggestionsDelayed() {
@@ -93,6 +94,7 @@ function hideNameSuggestionsDelayed() {
     document.getElementById('custom-suggestions').innerHTML = '';
   }, 150);
 }
+window.hideNameSuggestionsDelayed = hideNameSuggestionsDelayed;
 // --- Authentication Functions ---
 async function login() {
   const name = document.getElementById('login-name').value.trim();
@@ -140,6 +142,7 @@ async function login() {
   }
 }
 
+window.login = login;
 
 async function registerUser() {
     const name = document.getElementById('register-name').value.trim();
@@ -218,7 +221,19 @@ async function submitReport() {
     return;
   }
 
-
+  try {
+    const res = await fetch(`/api/report-exists?name=${encodeURIComponent(currentUser.name)}&week=${encodeURIComponent(week)}&surah=${encodeURIComponent(surah)}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error('فشل تحميل التقارير السابقة.');
+    if(data.exists){
+      alert('لقد قمت بإرسال تقرير لهذا الأسبوع    .');
+      return;
+  }
+  } catch (error) {
+    alert('حدث خطأ أثناء التحقق من التقارير السابقة.');
+    console.error(error);
+    return;
+  }
   const report = {
     name: currentUser.name,
     date: new Date().toISOString().split('T')[0], // التاريخ اليوم YYYY-MM-DD
@@ -1072,7 +1087,7 @@ function isWednesday() {
 }
 
 function checkFormAvailability() {
-  const isOpen = isWednesday();
+  const isOpen = 1==1 || isWednesday();
 
   document.getElementById('report-form').style.display = 'block';
   //document.getElementById('form-closed-message').style.display = isOpen ? 'none' : 'block';
