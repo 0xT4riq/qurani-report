@@ -592,6 +592,74 @@ async function loadReports() {
         alert(`لا يمكن تحميل التقارير: ${err.message}`);
     }
 }
+async function showReportSubmitters() {
+  try {
+    // جلب الفلاتر الحالية
+    const nameFilter = document.getElementById('searchInput')?.value?.trim().toLowerCase() || '';
+    const weekFilter = document.getElementById('adminReportWeekFilter')?.value || '';
+    const surahFilter = document.getElementById('adminReportSurahFilter')?.value || '';
+
+    // بناء الاستعلام بنفس طريقة displayReports
+    const queryParams = new URLSearchParams();
+    if (nameFilter) queryParams.append('name', nameFilter);
+    if (weekFilter) queryParams.append('week', weekFilter);
+    if (surahFilter) queryParams.append('surah', surahFilter);
+
+    const res = await fetch(`/api/reports?${queryParams.toString()}`);
+    if (!res.ok) throw new Error('فشل تحميل التقارير');
+    const reports = await res.json();
+
+    // أسماء فريدة من التقارير المصفّاة
+    const names = Array.from(new Set(
+      reports.map(r => (r.name || '').trim()).filter(Boolean)
+    ));
+
+    // ترتيب: إنجليزي أولاً ثم عربي
+    names.sort((a, b) => {
+      const enA = /^[A-Za-z]/.test(a);
+      const enB = /^[A-Za-z]/.test(b);
+      if (enA && !enB) return -1;
+      if (!enA && enB) return 1;
+      return a.localeCompare(b, 'ar');
+    });
+
+    const popup = document.getElementById('userListPopup');
+    const title = popup.querySelector('h3');
+    const container = document.getElementById('userList');
+
+    if (title) title.textContent = weekFilter 
+      ? `قائمة من قدّموا تقريرًا - ${weekFilter}`
+      : 'قائمة من قدّموا تقريرًا';
+
+    container.innerHTML = '';
+
+    // عدّاد
+    const countDiv = document.createElement('div');
+    countDiv.style.position = 'sticky';
+    countDiv.style.top = '0';
+    countDiv.style.background = '#fff';
+    countDiv.style.padding = '10px';
+    countDiv.style.zIndex = '100';
+    countDiv.style.borderBottom = '1px solid #ccc';
+    countDiv.style.marginBottom = '10px';
+    countDiv.innerHTML = `✅ عدد من قدّموا تقريرًا: <strong>${names.length}</strong>`;
+    container.appendChild(countDiv);
+
+    // عرض الأسماء
+    names.forEach(name => {
+      const row = document.createElement('div');
+      row.style.marginBottom = '8px';
+      row.innerHTML = `👤 <strong>${name}</strong>`;
+      container.appendChild(row);
+    });
+
+    popup.style.display = 'block';
+  } catch (err) {
+    alert('حدث خطأ أثناء تحميل قائمة المقدمين للتقرير.');
+    console.error(err);
+  }
+}
+
 
 // Export a single report to PDF
 async function exportPDF(rep) {
@@ -1323,6 +1391,7 @@ async function saveGlobalData() {
     alert('حدث خطأ أثناء الحفظ: ' + error.message);
   }
 }
+
 async function showUserList() {
   try {
     const res = await fetch('/api/accounts');
