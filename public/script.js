@@ -1087,7 +1087,7 @@ function isWednesday() {
 }
 
 function checkFormAvailability() {
-  const isOpen = 1==1 || isWednesday();
+  const isOpen = isWednesday();
 
   document.getElementById('report-form').style.display = 'block';
   //document.getElementById('form-closed-message').style.display = isOpen ? 'none' : 'block';
