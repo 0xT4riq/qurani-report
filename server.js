@@ -6,11 +6,8 @@ const webpush = require('web-push');
 const multer = require('multer');
 const unzipper = require('unzipper');
 const app = express();
-const globalDataPath = path.join(__dirname, 'globalData.json');
 const PORT = 3000;
 const { google } = require('googleapis');
-const CREDENTIALS = JSON.parse(fs.readFileSync('credentials.json'));
-const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
 import { supabase } from './supabaseClient.js'; 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -35,19 +32,6 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static frontend files from /public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Helper function to read JSON file
-function readJSON(file) {
-  try {
-    return JSON.parse(fs.readFileSync(file));
-  } catch {
-    return [];
-  }
-}
-
-// Helper function to write JSON file
-function writeJSON(file, data) {
-  fs.writeFileSync(file, JSON.stringify(data, null, 2));
-}
 
 // API to get all accounts (for admin)
 app.get('/api/accounts', async (req, res) => {
@@ -222,7 +206,7 @@ app.post('/api/login', async (req, res) => {
 
   const { data, error } = await supabase
     .from('accounts')
-    .select('*')
+    .select('name, "isAdmin", approved')
     .eq('name', name)
     .eq('password', password) // in production, hash passwords!
     .eq('approved', true);
@@ -230,7 +214,15 @@ app.post('/api/login', async (req, res) => {
   if (error) return res.status(500).json({ message: error.message });
   if (!data || data.length === 0) return res.status(401).json({ message: 'Invalid credentials' });
 
-  res.json(data[0]);
+    const user = data[0]; 
+    res.json({
+        message: 'Login successful',
+        user: {
+            name: user.name,
+            isAdmin: user.isAdmin,
+            approved: user.approved
+        }
+    });
 });
 app.post('/api/register', async (req, res) => {
   const { name, password, joinedSurah } = req.body;
