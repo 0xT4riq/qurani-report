@@ -11,7 +11,7 @@ const PORT = 3000;
 const { google } = require('googleapis');
 const CREDENTIALS = JSON.parse(fs.readFileSync('credentials.json'));
 const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
-
+import { supabase } from './supabaseClient.js'; 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
@@ -50,215 +50,256 @@ function writeJSON(file, data) {
 }
 
 // API to get all accounts (for admin)
-app.get('/api/accounts', (req, res) => {
-    let accounts = readJSON('accounts.json');
-  const { approved, isAdmin } = req.query;
+app.get('/api/accounts', async (req, res) => {
+  let query = supabase.from('accounts').select('*');
 
-  if (approved !== undefined) {
-    const approvedBool = approved === 'true';
-    accounts = accounts.filter(acc => acc.approved === approvedBool);
+  // Filtering by approved
+  if (req.query.approved !== undefined) {
+    const approvedBool = req.query.approved === 'true';
+    query = query.eq('approved', approvedBool);
   }
 
-  if (isAdmin !== undefined) {
-    const isAdminBool = isAdmin === 'true';
-    accounts = accounts.filter(acc => acc.isAdmin === isAdminBool);
+  // Filtering by isAdmin
+  if (req.query.isAdmin !== undefined) {
+    const isAdminBool = req.query.isAdmin === 'true';
+    query = query.eq('isAdmin', isAdminBool);
   }
 
+  const { data: accounts, error } = await query;
+
+  if (error) return res.status(500).json({ error: error.message });
   res.json(accounts);
 });
+
+
 // PUT /api/accounts/:name/approve
-app.put('/api/accounts/:name/approve', (req, res) => {
+app.put('/api/accounts/:name/approve', async (req, res) => {
   const name = req.params.name;
-  const accounts = readJSON('accounts.json');
-  const user = accounts.find(acc => acc.name === name);
-  if (user) {
-    user.approved = true;
-    writeJSON('accounts.json', accounts);
-    return res.json({ success: true, message: `User ${name} approved.` });
+
+  const { data, error } = await supabase
+    .from('accounts')
+    .update({ approved: true })
+    .eq('name', name)
+    .select();
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  if (!data || data.length === 0) {
+    return res.status(404).json({ success: false, message: 'User not found.' });
   }
-  res.status(404).json({ success: false, message: 'User not found.' });
+
+  res.json({ success: true, message: `User ${name} approved.` });
 });
+
 
 // DELETE /api/accounts/:name
-app.delete('/api/accounts/:name', (req, res) => {
+app.delete('/api/accounts/:name', async (req, res) => {
   const name = req.params.name;
-  let accounts = readJSON('accounts.json');
-  const userIndex = accounts.findIndex(acc => acc.name === name);
-  if (userIndex !== -1) {
-    accounts.splice(userIndex, 1);
-    writeJSON('accounts.json', accounts);
 
-    // أيضا حذف كل تقارير هذا المستخدم من reports.json
-    let reports = readJSON('reports.json');
-    reports = reports.filter(report => report.name !== name);
-    writeJSON('reports.json', reports);
+  // Delete reports first
+  const { error: reportsError } = await supabase
+    .from('reports')
+    .delete()
+    .eq('name', name);
 
-    return res.json({ success: true, message: `User ${name} and their reports deleted.` });
+  if (reportsError) return res.status(500).json({ error: reportsError.message });
+
+  // Delete account
+  const { data, error } = await supabase
+    .from('accounts')
+    .delete()
+    .eq('name', name)
+    .select();
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  if (!data || data.length === 0) {
+    return res.status(404).json({ success: false, message: 'User not found.' });
   }
-  res.status(404).json({ success: false, message: 'User not found.' });
-});
-// API to get all reports (for admin)
-app.get('/api/reports', (req, res) => {
-  let reports = readJSON('reports.json');
 
-  // Get filters from query params
+  res.json({ success: true, message: `User ${name} and their reports deleted.` });
+});
+// In POST /api/report:
+app.post('/api/report', async (req, res) => {
+  const newReport = req.body;
+
+  // Check duplicate
+  const { data: exists } = await supabase
+    .from('reports')
+    .select('*')
+    .eq('name', newReport.name)
+    .eq('week', newReport.week);
+
+  if (exists.length > 0) {
+    return res.status(400).json({ success: false, message: 'لقد قمت بإرسال تقرير لهذا الأسبوع مسبقًا.' });
+  }
+
+  const { error } = await supabase.from('reports').insert([newReport]);
+  if (error) return res.status(500).json({ success: false, message: error.message });
+
+  res.json({ success: true, message: 'تم إرسال التقرير' });
+});
+
+
+
+// API to get all reports (for admin)
+app.get('/api/reports', async (req, res) => {
   const { name, week, surah } = req.query;
+
+  let query = supabase.from('reports').select('*');
 
   if (name) {
-    const lowerName = name.toLowerCase();
-    reports = reports.filter(r => r.name.toLowerCase().includes(lowerName));
+    query = query.ilike('name', `%${name}%`);
   }
   if (week) {
-    reports = reports.filter(r => r.week === week);
+    query = query.eq('week', week);
   }
   if (surah) {
-    reports = reports.filter(r => r.surah === surah);
+    query = query.eq('surah', surah);
   }
 
-  res.json(reports);
-});
-app.get('/api/report-exists', (req, res) => {
-  const { name, week, surah } = req.query;
-  if (!name || !week || !surah) {
-    return res.status(400).json({ exists: false, message: 'Missing parameters' });
-  }
-  const reports = readJSON('reports.json');
-  const exists = reports.some(r =>
-    r.name === name && r.week === week && r.surah === surah
-  );
-  res.json({ exists });
+  const { data, error } = await query;
+
+  if (error) return res.status(500).json({ success: false, message: error.message });
+
+  res.json(data);
 });
 
-app.put('/api/reports/:id', (req, res) => {
+// UPDATE a report by id
+app.put('/api/reports/:id', async (req, res) => {
   const id = req.params.id;
   const updatedData = req.body;
 
-  const reports = readJSON('reports.json');
-  const index = reports.findIndex(r => r._id === id);
+  const { data, error } = await supabase
+    .from('reports')
+    .update(updatedData)
+    .eq('_id', id)
+    .select();
 
-  if (index === -1) {
-    return res.status(404).json({ success: false, message: 'Report not found' });
-  }
+  if (error) return res.status(500).json({ success: false, message: error.message });
+  if (!data || data.length === 0) return res.status(404).json({ success: false, message: 'Report not found' });
 
-  // Update fields (only those provided)
-  reports[index] = { ...reports[index], ...updatedData };
-
-  writeJSON('reports.json', reports);
-  res.json({ success: true, message: 'Report updated successfully' });
+  res.json({ success: true, message: 'Report updated successfully', report: data[0] });
 });
-app.delete('/api/reports/:id', (req, res) => {
+
+// DELETE a report by id
+app.delete('/api/reports/:id', async (req, res) => {
   const id = req.params.id;
-  let reports = readJSON('reports.json');
-  const index = reports.findIndex(r => r._id === id);
 
-  if (index === -1) {
-    return res.status(404).json({ success: false, message: 'Report not found' });
-  }
+  const { data, error } = await supabase
+    .from('reports')
+    .delete()
+    .eq('_id', id)
+    .select();
 
-  reports.splice(index, 1);
-  writeJSON('reports.json', reports);
+  if (error) return res.status(500).json({ success: false, message: error.message });
+  if (!data || data.length === 0) return res.status(404).json({ success: false, message: 'Report not found' });
+
   res.json({ success: true, message: 'Report deleted successfully' });
 });
 const { v4: uuidv4 } = require('uuid'); // Install uuid package
 
-// In POST /api/report:
-app.post('/api/report', (req, res) => {
-  const reports = readJSON('reports.json');
-  const newReport = req.body;
-    const alreadySent = reports.find(r =>
-    r.name === newReport.name && r.week === newReport.week
-    );
 
-  if (alreadySent) {
-    return res.status(400).json({
-      success: false,
-      message: 'لقد قمت بإرسال تقرير لهذا الأسبوع مسبقًا.'
-    });
-  }
-  newReport._id = uuidv4(); // Add unique ID
-  reports.push(newReport);
-  writeJSON('reports.json', reports);
-  res.json({ success: true, message: 'تم إرسال التقرير', id: newReport._id });
-});
 
 // API to approve account (admin action)
-app.post('/api/approve-account', (req, res) => {
+app.post('/api/approve-account', async (req, res) => {
   const { name } = req.body;
-  const accounts = readJSON('accounts.json');
-  const user = accounts.find(acc => acc.name === name);
-  if (user) {
-    user.approved = true;
-    writeJSON('accounts.json', accounts);
-    return res.json({ success: true, message: `User ${name} approved.` });
-  }
-  res.status(404).json({ success: false, message: 'User not found.' });
+
+  const { data, error } = await supabase
+    .from('accounts')
+    .update({ approved: true })
+    .eq('name', name)
+    .select();
+
+  if (error) return res.status(500).json({ success: false, message: error.message });
+  if (!data || data.length === 0) return res.status(404).json({ success: false, message: 'User not found.' });
+
+  res.json({ success: true, message: `User ${name} approved.` });
 });
-app.post('/api/login', (req, res) => {
+
+app.post('/api/login', async (req, res) => {
   const { name, password } = req.body;
-  const accounts = readJSON('accounts.json');
-  const user = accounts.find(acc => acc.name === name && acc.password === password && acc.approved === true);
 
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid credentials' });
-  }
+  const { data, error } = await supabase
+    .from('accounts')
+    .select('*')
+    .eq('name', name)
+    .eq('password', password) // in production, hash passwords!
+    .eq('approved', true);
 
-  res.json(user);
+  if (error) return res.status(500).json({ message: error.message });
+  if (!data || data.length === 0) return res.status(401).json({ message: 'Invalid credentials' });
+
+  res.json(data[0]);
 });
-app.post('/api/register', (req, res) => {
+app.post('/api/register', async (req, res) => {
   const { name, password, joinedSurah } = req.body;
 
   if (!name || !password || !joinedSurah) {
     return res.status(400).json({ success: false, message: 'الاسم وكلمة المرور و السورة مطلوب.' });
   }
 
-  const accounts = readJSON('accounts.json');
+  // Check if user exists
+  const { data: existing, error: checkError } = await supabase
+    .from('accounts')
+    .select('name')
+    .eq('name', name);
 
-  // تحقق إذا المستخدم موجود
-  const exists = accounts.some(acc => acc.name === name);
-  if (exists) {
+  if (checkError) return res.status(500).json({ success: false, message: checkError.message });
+  if (existing && existing.length > 0) {
     return res.status(409).json({ success: false, message: 'اسم المستخدم مسجل مسبقاً.' });
   }
 
-  const newUser = {
-    name,
-    password,
-    joinedSurah,
-    approved: false,
-    isAdmin: false
-  };
+  const { data, error } = await supabase
+    .from('accounts')
+    .insert([{ name, password, joinedSurah, approved: false, isAdmin: false }])
+    .select();
 
-  accounts.push(newUser);
-  writeJSON('accounts.json', accounts);
+  if (error) return res.status(500).json({ success: false, message: error.message });
 
-  res.status(201).json({ success: true, message: 'تم التسجيل بنجاح. سيقوم المشرف بموافقتك في اقرب وقت' });
+  res.status(201).json({ success: true, message: 'تم التسجيل بنجاح. سيقوم المشرف بموافقتك في اقرب وقت', user: data[0] });
 });
 
-app.get('/api/global-data', (req, res) => {
-  const filePath = path.join(__dirname,'globalData.json'); // ← عدل المسار حسب مكان الملف
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error('فشل قراءة ملف globalData.json:', err);
-      return res.status(500).json({ error: 'فشل تحميل البيانات' });
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.send(data);
-  });
+
+// GET global data
+app.get('/api/global-data', async (req, res) => {
+  const { data, error } = await supabase
+    .from('global_data')
+    .select('*')
+    .limit(1)
+    .single(); // get only the first row
+
+  if (error) {
+    console.error('Failed to fetch global data:', error);
+    return res.status(500).json({ error: 'فشل تحميل البيانات' });
+  }
+
+  res.json(data);
 });
-app.put('/api/global-data', (req, res) => {
+
+app.put('/api/global-data', async (req, res) => {
   const newData = req.body;
 
-  // ممكن تضيف تحقق هنا مثل التأكد من وجود الأسابيع والسور والتشيكليست
   if (!newData.weeks || !newData.surahs || !newData.reportChecklist) {
     return res.status(400).json({ error: 'بيانات غير كاملة' });
   }
 
-  fs.writeFile(globalDataPath, JSON.stringify(newData, null, 2), (err) => {
-    if (err) {
-      console.error('فشل حفظ ملف globalData.json:', err);
-      return res.status(500).json({ error: 'فشل حفظ البيانات' });
-    }
-    res.json({ message: 'تم تحديث البيانات بنجاح' });
-  });
+  const { data, error } = await supabase
+    .from('global_data')
+    .update({
+      weeks: newData.weeks,
+      surahs: newData.surahs,
+      reportChecklist: newData.reportChecklist
+    })
+    .eq('id', 1) // assuming the single row has id=1
+    .select();
+
+  if (error) {
+    console.error('Failed to update global data:', error);
+    return res.status(500).json({ error: 'فشل حفظ البيانات' });
+  }
+
+  res.json({ message: 'تم تحديث البيانات بنجاح', data: data[0] });
 });
 webpush.setVapidDetails(
   'mailto:you@example.com',
@@ -354,23 +395,35 @@ app.post('/api/import-data', upload.single('backup'), async (req, res) => {
   }
 });
 
-app.post('/api/update-account', (req, res) => {
+app.post('/api/update-account', async (req, res) => {
   const { oldName, newName, newPassword } = req.body;
 
-  const accounts = JSON.parse(fs.readFileSync('accounts.json', 'utf-8'));
+  // Check if user exists
+  const { data: user, error: fetchError } = await supabase
+    .from('accounts')
+    .select('*')
+    .eq('name', oldName)
+    .single();
 
-  const user = accounts.find(u => u.name === oldName);
+  if (fetchError) {
+    return res.status(500).json({ success: false, message: fetchError.message });
+  }
   if (!user) {
-    return res.json({ success: false, message: 'المستخدم غير موجود' });
+    return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
   }
 
-  // تحديث الاسم وكلمة المرور فقط
-  user.name = newName;
-  user.password = newPassword;
+  // Update name and password
+  const { data, error: updateError } = await supabase
+    .from('accounts')
+    .update({ name: newName, password: newPassword }) // in production, hash passwords!
+    .eq('name', oldName)
+    .select();
 
-  fs.writeFileSync('accounts.json', JSON.stringify(accounts, null, 2), 'utf-8');
+  if (updateError) {
+    return res.status(500).json({ success: false, message: updateError.message });
+  }
 
-  res.json({ success: true });
+  res.json({ success: true, message: 'تم تحديث الحساب بنجاح', user: data[0] });
 });
 async function uploadFileToDrive(filePath) {
   try {
