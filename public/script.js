@@ -193,6 +193,7 @@ async function loadGlobalData() {
     const response = await fetch('/api/global-data');
     if (!response.ok) throw new Error('فشل تحميل globalData.json');
     globalData = await response.json();
+    console.log('تم تحميل globalData:', globalData);
     // ممكن بعدها تنادي دوال مثل: populateWeekOptions() وغيرها
     populateFormOptions();
   } catch (err) {
