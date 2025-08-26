@@ -150,7 +150,7 @@ app.get('/api/reports', async (req, res) => {
 
   res.json(data);
 });
-*/
+
 // UPDATE a report by id
 app.put('/api/reports/:id', async (req, res) => {
   const id = req.params.id;
@@ -185,7 +185,7 @@ app.delete('/api/reports/:id', async (req, res) => {
 });
 const { v4: uuidv4 } = require('uuid'); // Install uuid package
 
-
+*/
 /*
 // API to approve account (admin action)
 app.post('/api/approve-account', async (req, res) => {
@@ -226,7 +226,7 @@ app.post('/api/login', async (req, res) => {
         }
     });
 });
-*/
+
 app.post('/api/register', async (req, res) => {
   const { name, password, joinedSurah } = req.body;
 
@@ -254,7 +254,7 @@ app.post('/api/register', async (req, res) => {
 
   res.status(201).json({ success: true, message: 'تم التسجيل بنجاح. سيقوم المشرف بموافقتك في اقرب وقت', user: data[0] });
 });
-
+*/
 /*
 // GET global data
 app.get('/api/global-data', async (req, res) => {
@@ -390,7 +390,7 @@ app.post('/api/import-data', upload.single('backup'), async (req, res) => {
     res.status(500).json({ error: 'فشل في استيراد البيانات' });
   }
 });
-
+/*
 app.post('/api/update-account', async (req, res) => {
   const { oldName, newName, newPassword } = req.body;
 
@@ -421,6 +421,7 @@ app.post('/api/update-account', async (req, res) => {
 
   res.json({ success: true, message: 'تم تحديث الحساب بنجاح', user: data[0] });
 });
+*/
 async function uploadFileToDrive(filePath) {
   try {
     const fileName = `${path.basename(filePath)}-${new Date().toISOString()}`;
