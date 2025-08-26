@@ -271,10 +271,16 @@ async function submitReport() {
 
 function generateChecklistHtml(rep) {
   if (!globalData || !globalData.reportChecklist) return '';
-
+    // Step 1: Access the correct property on the report object.
+  const reportChecklistData = rep.reportChecklist; 
+  
+  // Safety check to ensure the data is present and is an object.
+  if (!reportChecklistData || typeof reportChecklistData !== 'object') {
+      return '<li>لا توجد بيانات قائمة مراجعة.</li>';
+  }
   return globalData.reportChecklist.map(item => {
-    const checked = rep[item.id] ? '✅' : '❌';
-    const note = rep[`${item.id}_note`] ? ` — <em>${rep[`${item.id}_note`]}</em>` : '';
+    const checked = reportChecklistData[item.id] ? '✅' : '❌';
+    const note = reportChecklistData[`${item.id}_note`] ? ` — <em>${rep[`${item.id}_note`]}</em>` : '';
     return `<li>${item.label}: ${checked}${note}</li>`;
   }).join('');
 }
