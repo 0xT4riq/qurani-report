@@ -200,7 +200,7 @@ app.post('/api/approve-account', async (req, res) => {
 
   res.json({ success: true, message: `User ${name} approved.` });
 });
-
+/*
 app.post('/api/login', async (req, res) => {
   const { name, password } = req.body;
 
@@ -224,6 +224,7 @@ app.post('/api/login', async (req, res) => {
         }
     });
 });
+*/
 app.post('/api/register', async (req, res) => {
   const { name, password, joinedSurah } = req.body;
 
