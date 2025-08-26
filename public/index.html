@@ -151,16 +151,6 @@
         <button onclick="saveGlobalData()">حفظ التغييرات</button>
         <button onclick="closeGlobalDataEditor()" style="margin-left: 10px;">إغلاق</button>
       </div>
-      <h3>قسم المطور</h3>
-      <a href="/api/export-data" download>📤 تحميل نسخة احتياطية</a>
-
-      <!-- Import Form -->
-      <form id="importForm" method="POST" enctype="multipart/form-data" action="/api/import-data">
-        <input type="file" name="backup" accept=".zip" required />
-        <button type="submit">📥 استرجاع نسخة احتياطية</button>
-      </form>
-
-
       <h3>لوحة تحكم المشرف</h3>
       <h4>طلبات تسجيل الحساب:</h4>
       <div id="accounts-requests"></div>
