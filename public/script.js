@@ -270,7 +270,7 @@ async function submitReport() {
 
 
 function generateChecklistHtml(rep) {
-  if (!globalData || !globalData.reportChecklist) return '';
+  if (!globalData || !globalData.reportchecklist) return '';
     // Step 1: Access the correct property on the report object.
    if (!rep) {
         return '<li>لا توجد بيانات قائمة مراجعة.</li>';

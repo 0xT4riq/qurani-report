@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   else if (req.method === 'PUT') {
     const newData = req.body;
 
-    if (!newData.weeks || !newData.surahs || !newData.reportChecklist) {
+    if (!newData.weeks || !newData.surahs || !newData.reportchecklist) {
       return res.status(400).json({ error: 'بيانات غير كاملة' });
     }
 
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       .update({
         weeks: newData.weeks,
         surahs: newData.surahs,
-        reportChecklist: newData.reportChecklist
+        reportchecklist: newData.reportchecklist
       })
       .eq('id', 1)
       .select();
