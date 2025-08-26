@@ -12,9 +12,9 @@ export default async function handler(req, res) {
     }
 
     // Filtering by 'isAdmin' status
-    if (req.query.isAdmin !== undefined) {
-      const isAdminBool = req.query.isAdmin === 'true';
-      query = query.eq('isAdmin', isAdminBool);
+    if (req.query.isadmin !== undefined) {
+      const isAdminBool = req.query.isadmin === 'true';
+      query = query.eq('isadmin', isAdminBool);
     }
 
     const { data: accounts, error } = await query;
