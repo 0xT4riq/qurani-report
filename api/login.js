@@ -32,7 +32,7 @@ export default async function handler(req, res) {
         message: 'Login successful',
         user: {
             name: user.name,
-            isAdmin: user.isAdmin,
+            isAdmin: user.isadmin,
             approved: user.approved
         }
     });

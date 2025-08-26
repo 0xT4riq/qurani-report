@@ -118,8 +118,8 @@ async function login() {
           alert('تأكد من صحة الاسم او كلمة المرور.');
           return;
       }
-
-      const user = await response.json();
+      const responseData = await response.json();
+      const user = responseData.user;
 
       if (!user || !user.name) {
           alert('معلومات الدخول غير صحيحة.');
