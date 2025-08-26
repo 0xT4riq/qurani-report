@@ -258,7 +258,7 @@ async function submitReport() {
 
     const result = await response.json();
     alert(result.message || 'تم إرسال التقرير بنجاح.');
-    showNotification(`تم إرسال تقريرك بنجاح: ${report.week} - سورة ${report.surah}`);
+    //showNotification(`تم إرسال تقريرك بنجاح: ${report.week} - سورة ${report.surah}`);
     displayMyReports(); // إعادة تحميل التقارير
 
   } catch (error) {
@@ -409,7 +409,7 @@ async function displayReports() {
         <div class="action-buttons">
           <button aria-label="تعديل التقرير" onclick="editReportForm('${rep.id}')">✏️ تعديل</button>
           <button aria-label="تحميل التقرير PDF" onclick="exportPDFById('${rep.id}')">📄 تحميل PDF</button>
-          <button aria-label="حذف التقرير" class="delete-btn" onclick="deleteReportById('${rep._id}')">🗑️ حذف</button>
+          <button aria-label="حذف التقرير" class="delete-btn" onclick="deleteReportById('${rep.id}')">🗑️ حذف</button>
         </div>
       `;
 
@@ -452,7 +452,7 @@ async function deleteReportById(reportId) {
 }
 // Show edit form for report with given ID
 function editReportForm(reportId) {
-  const rep = currentReports.find(r => r._id === reportId);
+  const rep = currentReports.find(r => r.id === reportId);
   if (!rep) {
     alert("التقرير غير موجود");
     return;
