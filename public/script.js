@@ -402,8 +402,8 @@ async function displayReports() {
           ${generateChecklistHtml(rep)}
         </ul>
         <div class="action-buttons">
-          <button aria-label="تعديل التقرير" onclick="editReportForm('${rep._id}')">✏️ تعديل</button>
-          <button aria-label="تحميل التقرير PDF" onclick="exportPDFById('${rep._id}')">📄 تحميل PDF</button>
+          <button aria-label="تعديل التقرير" onclick="editReportForm('${rep.id}')">✏️ تعديل</button>
+          <button aria-label="تحميل التقرير PDF" onclick="exportPDFById('${rep.id}')">📄 تحميل PDF</button>
           <button aria-label="حذف التقرير" class="delete-btn" onclick="deleteReportById('${rep._id}')">🗑️ حذف</button>
         </div>
       `;
