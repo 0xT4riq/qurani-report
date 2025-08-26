@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
     const { data, error } = await supabase
         .from('accounts')
-        .select('name, "isAdmin", approved')
+        .select('name, "isadmin", approved')
         .eq('name', name)
         .eq('password', password)
         .eq('approved', true);
