@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static frontend files from /public
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+/*
 // API to get all accounts (for admin)
 app.get('/api/accounts', async (req, res) => {
   let query = supabase.from('accounts').select('*');
@@ -103,6 +103,8 @@ app.delete('/api/accounts/:name', async (req, res) => {
 
   res.json({ success: true, message: `User ${name} and their reports deleted.` });
 });
+*/
+/*
 // In POST /api/report:
 app.post('/api/report', async (req, res) => {
   const newReport = req.body;
@@ -148,7 +150,7 @@ app.get('/api/reports', async (req, res) => {
 
   res.json(data);
 });
-
+*/
 // UPDATE a report by id
 app.put('/api/reports/:id', async (req, res) => {
   const id = req.params.id;
@@ -184,7 +186,7 @@ app.delete('/api/reports/:id', async (req, res) => {
 const { v4: uuidv4 } = require('uuid'); // Install uuid package
 
 
-
+/*
 // API to approve account (admin action)
 app.post('/api/approve-account', async (req, res) => {
   const { name } = req.body;
@@ -200,7 +202,7 @@ app.post('/api/approve-account', async (req, res) => {
 
   res.json({ success: true, message: `User ${name} approved.` });
 });
-/*
+
 app.post('/api/login', async (req, res) => {
   const { name, password } = req.body;
 
@@ -253,7 +255,7 @@ app.post('/api/register', async (req, res) => {
   res.status(201).json({ success: true, message: 'تم التسجيل بنجاح. سيقوم المشرف بموافقتك في اقرب وقت', user: data[0] });
 });
 
-
+/*
 // GET global data
 app.get('/api/global-data', async (req, res) => {
   const { data, error } = await supabase
@@ -294,6 +296,7 @@ app.put('/api/global-data', async (req, res) => {
 
   res.json({ message: 'تم تحديث البيانات بنجاح', data: data[0] });
 });
+*/
 webpush.setVapidDetails(
   'mailto:you@example.com',
   'BOWP9TLniGm1C2pR7r9yCF4gWxlrxbTZqvCTX1lEK0n3hloeizZ_W3zPXxxkCzesiM788wtiedxG2Iq6VPlAQ64',
