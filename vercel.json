@@ -8,5 +8,15 @@
       "path": "/api/send-reminder",
       "schedule": "0 20 * * 3"
     }
-  ]
+  ],
+    "rewrites": [
+    {
+        "source": "/api/login",
+        "destination": "/api/auth"
+    },
+    {
+        "source": "/api/register",
+        "destination": "/api/auth"
+    }
+    ]
 }
