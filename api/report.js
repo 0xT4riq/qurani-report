@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
     let query = supabase.from('reports').select('*');
 
-    if (name) query = query.ilike('name', `%${name}%`);
+    if (name) query = query.eq('name', name);
     if (week) query = query.eq('week', week);
     if (surah) query = query.eq('surah', surah);
 
