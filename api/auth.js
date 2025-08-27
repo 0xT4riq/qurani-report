@@ -33,7 +33,7 @@ const handleLogin = async (req, res) => {
 
   const { data, error } = await supabase
     .from('accounts')
-    .select('id, name, state, isadmin')
+    .select('name, approved, isadmin')
     .eq('name', trimmedName)
     .eq('password', trimmedPassword)
     .single();
@@ -52,8 +52,8 @@ const handleLogin = async (req, res) => {
     message: 'تم تسجيل الدخول',
     userId: data.id,
     userName: data.name,
-    userState: data.state,
-    isAdmin: data.isadmin
+    isAdmin: data.isadmin,                     
+    approved: data.approved
   });
 };
 
@@ -64,14 +64,14 @@ const handleRegister = async (req, res) => {
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  const { name, email, state, password } = req.body;
-  if (!name || !email || !state || !password) {
-    return res.status(400).json({ success: false, message: 'يرجى إدخال جميع الخانات' });
-  }
+    const { name, password, joinedSurah } = req.body;
+    if (!name || !password || !joinedSurah) {
+        return res.status(400).json({ success: false, message: 'الاسم وكلمة المرور و السورة مطلوب.' });
+    }
 
   const { data: existingUser, error: checkError } = await supabase
     .from('accounts')
-    .select('id')
+    .select('name')
     .or(`name.eq.${name},email.eq.${email}`);
 
   if (checkError) {
