@@ -236,7 +236,7 @@ async function submitReport() {
     return;
   }
   const report = {
-    name: currentUser.name,
+    name: currentUser.userName,
     date: new Date().toISOString().split('T')[0], // التاريخ اليوم YYYY-MM-DD
     surah,
     week,
