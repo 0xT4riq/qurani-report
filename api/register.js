@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     // Insert new user
     const { data, error } = await supabase
       .from('accounts')
-      .insert([{ name, password, joinedSurah, approved: false, isAdmin: false }])
+      .insert([{ name, password, joinedSurah, approved: false, isadmin: false }])
       .select();
 
     if (error) {
