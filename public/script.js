@@ -312,7 +312,7 @@ async function displayMyReports() {
 
     const query = new URLSearchParams(params).toString();
 
-    const res = await fetch(`/api/reports?${query}`);
+    const res = await fetch(`/api/report?${query}`);
     if (!res.ok) throw new Error('فشل تحميل التقارير');
 
     currentReports = await res.json();
