@@ -121,7 +121,7 @@ async function login() {
       const responseData = await response.json();
       const user = responseData.user;
 
-      if (!user || !user.name) {
+      if (!user || !user.userName) {
           alert('معلومات الدخول غير صحيحة.');
           return;
       }
@@ -167,7 +167,7 @@ async function registerUser() {
             return;
         }
 
-        //alert('✅ تم تسجيل حسابك بنجاح. في انتظار موافقة المشرف.');
+        alert('✅ تم تسجيل حسابك بنجاح. في انتظار موافقة المشرف.');
         showLogin();
     } catch (error) {
         alert('خطأ في الاتصال بالسيرفر.');

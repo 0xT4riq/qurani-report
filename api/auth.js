@@ -47,14 +47,16 @@ const handleLogin = async (req, res) => {
     return res.status(500).json({ success: false, message: 'حدث خطأ داخلي' });
   }
 
-  res.json({
+    res.json({
     success: true,
     message: 'تم تسجيل الدخول',
-    userId: data.id,
-    userName: data.name,
-    isAdmin: data.isadmin,                     
-    approved: data.approved
-  });
+    user: {
+        userId: data.id,
+        userName: data.name,
+        isAdmin: data.isAdmin,
+        approved: data.approved,
+    },
+    });
 };
 
 // Handler for the /api/register endpoint
