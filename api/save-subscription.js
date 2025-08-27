@@ -17,6 +17,7 @@ export default async function handler(req, res) {
   }
 
   const subscription = req.body;
+    const { userId, isAdmin } = req.body; 
   if (!subscription || !subscription.endpoint) {
     return res.status(400).json({ success: false, message: 'بيانات الاشتراك غير صالحة' });
   }
@@ -33,20 +34,27 @@ export default async function handler(req, res) {
       console.error('Supabase select error:', selectError);
       return res.status(500).json({ error: 'حدث خطأ داخلي' });
     }
-
     let isNewSubscription = false;
     if (existingSubs.length === 0) {
       // If subscription doesn't exist, insert the full JSON object
+        let insertObject = {
+        subscription: subscription,
+        };
+    
+    // Check if the user is an admin and include their ID
+        if (isAdmin) {
+        insertObject.user_id = userId;
+        }
       const { data, error: insertError } = await supabase
         .from('subscriptions')
-        .insert([{ subscription: subscription }]); // Store the entire object
-
+        .insert([insertObject]);
       if (insertError) {
         console.error('Supabase insert error:', insertError);
         return res.status(500).json({ error: 'فشل حفظ الاشتراك' });
       }
       isNewSubscription = true;
     }
+
 
     // Attempt to send a confirmation notification
     const notificationPayload = {

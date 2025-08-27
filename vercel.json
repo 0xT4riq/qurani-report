@@ -17,6 +17,15 @@
     {
         "source": "/api/register",
         "destination": "/api/auth"
+    },    
+    {
+      "source": "/api/accounts",
+      "destination": "/api/admin"
+    },
+    {
+      "source": "/api/approve-account",
+      "destination": "/api/admin"
     }
+
     ]
 }
