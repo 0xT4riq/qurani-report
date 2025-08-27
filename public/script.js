@@ -1432,7 +1432,7 @@ async function showUserList() {
       div.style.marginBottom = '8px';
 
       div.innerHTML = `
-        👤 <strong>${user.name}</strong> - انضم عند: ${user.joinedSurah || 'غير محدد'}
+        👤 <strong>${user.name}</strong> - انضم عند: ${user.joinedsurah || 'غير محدد'}
         <button onclick="rejectAccount('${user.name}')" style="margin-right: 10px; color: white;">حذف</button>
       `;
 
