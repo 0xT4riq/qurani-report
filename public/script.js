@@ -306,7 +306,7 @@ async function displayMyReports() {
 
   try {
     const params = {};
-    params.name = currentUser.name;
+    params.name = currentUser.userName;
     if (weekFilter) params.week = weekFilter;
     if (surahFilter) params.surah = surahFilter;
 
