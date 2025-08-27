@@ -6,12 +6,12 @@ export default async function handler(req, res) {
     case 'GET':
       // Handler for fetching account data
       return handleGetAccounts(req, res);
-    case 'POST':
+    case 'PUT':
       // Handler for approving an account
       return handleApproveAccount(req, res);
     default:
       // Return a 405 Method Not Allowed error for any other methods
-      res.setHeader('Allow', ['GET', 'POST']);
+      res.setHeader('Allow', ['GET', 'PUT']);
       return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

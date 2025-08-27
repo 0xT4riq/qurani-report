@@ -1130,7 +1130,7 @@ async function displayAccountRequests() {
 
 async function approveAccount(nameToApprove) {
   try {
-    const res = await fetch(`/api/accounts/approve`, { method: 'POST',  headers: {
+    const res = await fetch(`/api/accounts/approve`, { method: 'PUT',  headers: {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({ name: nameToApprove }) });

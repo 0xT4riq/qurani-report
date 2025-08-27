@@ -25,6 +25,10 @@
     {
       "source": "/api/approve-account",
       "destination": "/api/admin"
+    },
+    {
+      "source": "/api/accounts/approve",
+      "destination": "/api/admin"
     }
 
     ]
