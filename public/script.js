@@ -1130,7 +1130,10 @@ async function displayAccountRequests() {
 
 async function approveAccount(nameToApprove) {
   try {
-    const res = await fetch(`/api/accounts/${encodeURIComponent(nameToApprove)}/approve`, { method: 'PUT' });
+    const res = await fetch(`/api/accounts/approve`, { method: 'POST',  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ name: nameToApprove }) });
     if (!res.ok) throw new Error('فشل في الموافقة على الحساب');
     alert(`تمت الموافقة على حساب ${nameToApprove}.`);
     displayAccountRequests();
