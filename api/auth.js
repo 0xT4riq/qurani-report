@@ -87,7 +87,7 @@ const handleRegister = async (req, res) => {
 
   const { data, error } = await supabase
     .from('accounts')
-    .insert([{ name, password, joinedsurah, approved: false, isadmin: false }])
+    .insert([{ name, password, joinedsurah: joinedSurah, approved: false, isadmin: false }])
     .select();
 
   if (error) {
