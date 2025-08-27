@@ -53,7 +53,7 @@ const handleLogin = async (req, res) => {
     user: {
         userId: data.id,
         userName: data.name,
-        isAdmin: data.isAdmin,
+        isAdmin: data.isadmin,
         approved: data.approved,
     },
     });
