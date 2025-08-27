@@ -74,7 +74,7 @@ const handleRegister = async (req, res) => {
   const { data: existingUser, error: checkError } = await supabase
     .from('accounts')
     .select('name')
-    .or(`name.eq.${name},email.eq.${email}`);
+    .eq('name', name);
 
   if (checkError) {
     console.error('API Error:', checkError);
@@ -87,7 +87,7 @@ const handleRegister = async (req, res) => {
 
   const { data, error } = await supabase
     .from('accounts')
-    .insert([{ name, password, joinedSurah, approved: false, isadmin: false }])
+    .insert([{ name, password, joinedsurah, approved: false, isadmin: false }])
     .select();
 
   if (error) {
