@@ -296,7 +296,7 @@ app.put('/api/global-data', async (req, res) => {
 
   res.json({ message: 'تم تحديث البيانات بنجاح', data: data[0] });
 });
-*/
+
 webpush.setVapidDetails(
   'mailto:you@example.com',
   'BOWP9TLniGm1C2pR7r9yCF4gWxlrxbTZqvCTX1lEK0n3hloeizZ_W3zPXxxkCzesiM788wtiedxG2Iq6VPlAQ64',
@@ -331,6 +331,7 @@ app.post('/api/save-subscription', express.json(), async (req, res) => {
     res.status(500).json({ error: 'تم الحفظ، لكن فشل إرسال الإشعار' });
   }
 });
+*/
 const cron = require('node-cron');
 const { sendWednesdayReminder } = require('./reminder');
 
