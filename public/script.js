@@ -1245,11 +1245,22 @@ function searchStudentPassword() {
       ${acc.username ? `<p><strong>اسم المستخدم:</strong> ${acc.username}</p>` : ''}
       ${acc.email ? `<p><strong>البريد الإلكتروني:</strong> ${acc.email}</p>` : ''}
       <p><strong>كلمة المرور:</strong> <span style="color: red;">${acc.password}</span></p>
+      <button onclick="loginWithStudent('${acc.username}', '${acc.password}')">تسجيل الدخول</button>
     `;
 
     resultsDiv.appendChild(div);
   });
 }
+function loginWithStudent(username, password) {
+    closePasswordPopup();
+    logout(); // تسجيل خروج المستخدم الحالي إذا كان هناك واحد
+
+    showLogin();
+    // يمكنك استخدام sessionStorage أو localStorage لتخزين البيانات
+    document.getElementById('login-name').value = username;
+    document.getElementById('login-password').value = password;
+    login();
+  }
 function populateFormOptions() {
 
   // خيارات الأسابيع
