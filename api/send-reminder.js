@@ -24,8 +24,8 @@ export default async function handler(req, res) {
 
     // 2. Send a notification to each subscriber
     const notificationPayload = JSON.stringify({
-      title: "تذكير: محاضرة الأربعاء",
-      body: "لا تنسى المحاضرة لهذا اليوم!",
+      title: "تذكير: تقرير الأربعاء",
+      body: "لا تنسى تقرير لهذا اليوم!",
       icon: "/logo.png"
     });
 
