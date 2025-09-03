@@ -26,6 +26,11 @@ const showReportBox = () => {
     document.getElementById('login-box').classList.add('hidden');
     document.getElementById('admin-box').classList.add('hidden');
     document.getElementById('report-box').classList.remove('hidden');
+    if (currentUser && currentUser.name) {
+        document.getElementById('welcome-message').textContent = `أهلاً بك, ${currentUser.name}`;
+    } else {
+        document.getElementById('welcome-message').textContent = '**يفضل أعادة تسجيل الدخول ، سجل خروجك و ادخل مرة اخرى**';
+    }
     // Ensure filter dropdowns are reset before displaying
     document.getElementById('myReportWeekFilter').value = '';
     document.getElementById('myReportSurahFilter').value = '';
