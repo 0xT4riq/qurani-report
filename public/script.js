@@ -1245,7 +1245,7 @@ function searchStudentPassword() {
       ${acc.username ? `<p><strong>اسم المستخدم:</strong> ${acc.username}</p>` : ''}
       ${acc.email ? `<p><strong>البريد الإلكتروني:</strong> ${acc.email}</p>` : ''}
       <p><strong>كلمة المرور:</strong> <span style="color: red;">${acc.password}</span></p>
-      <button onclick="loginWithStudent('${acc.username}', '${acc.password}')">تسجيل الدخول</button>
+      <button onclick="loginWithStudent('${acc.name}', '${acc.password}')">تسجيل الدخول</button>
     `;
 
     resultsDiv.appendChild(div);
