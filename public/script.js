@@ -56,7 +56,7 @@ async function loadNameSuggestions() {
     if (!response.ok) return;
     const accounts = await response.json();
     allAccountNames = accounts
-      .filter(acc => !acc.isAdmin) // Exclude admin accounts
+      .filter(acc => !acc.isadmin) // Exclude admin accounts
       .map(acc => acc.name)
       .filter(name => name && name.trim() !== '');
   } catch (e) {
