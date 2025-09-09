@@ -1168,17 +1168,24 @@ function isWednesday() {
 }
 
 function checkFormAvailability() {
-  const isOpen = isWednesday();
-
+  const isWednesdayToday = isWednesday();
+  const swearingCheckbox = document.getElementById('swearingCheckbox');
   document.getElementById('report-form').style.display = 'block';
   //document.getElementById('form-closed-message').style.display = isOpen ? 'none' : 'block';
 
   const submitBtn = document.querySelector('#report-form button[onclick="submitReport()"]');
   if (submitBtn) {
-    submitBtn.disabled = !isOpen;
-    submitBtn.style.opacity = isOpen ? '1' : '0.5';
-    submitBtn.style.cursor = isOpen ? 'pointer' : 'not-allowed';
-    submitBtn.textContent = isOpen ? 'إرسال التقرير' : '🕓 متاح فقط يوم الأربعاء';
+    const canSubmit = isWednesdayToday && (swearingCheckbox ? swearingCheckbox.checked : false);
+    submitBtn.disabled = !canSubmit;
+    submitBtn.style.opacity = canSubmit ? '1' : '0.5';
+    submitBtn.style.cursor = canSubmit ? 'pointer' : 'not-allowed';
+    
+    // Update button text based on the day
+    if (!isWednesdayToday) {
+      submitBtn.textContent = '🕓 متاح فقط يوم الأربعاء';
+    } else {
+      submitBtn.textContent = 'إرسال التقرير';
+    }
   }
 }
 let accounts = [];
