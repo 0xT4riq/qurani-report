@@ -1171,8 +1171,6 @@ function checkFormAvailability() {
   const isWednesdayToday = isWednesday();
   const swearingCheckbox = document.getElementById('swearingCheckbox');
   document.getElementById('report-form').style.display = 'block';
-  //document.getElementById('form-closed-message').style.display = isOpen ? 'none' : 'block';
-
   const submitBtn = document.querySelector('#report-form button[onclick="submitReport()"]');
   if (submitBtn) {
     const canSubmit = isWednesdayToday && (swearingCheckbox ? swearingCheckbox.checked : false);
@@ -1564,7 +1562,7 @@ function showUpdateForm() {
   const user = currentUser
   if (!user) return alert("لم يتم تسجيل الدخول!");
 
-  document.getElementById('update-username').value = user.name;
+  document.getElementById('update-username').value = user.userName;
   document.getElementById('update-password').value = user.password;
 
   const form = document.getElementById('update-form');
@@ -1583,7 +1581,7 @@ function submitUpdate() {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      oldName: user.name,
+      oldName: user.userName,
       newName,
       newPassword
     })
@@ -1594,7 +1592,7 @@ function submitUpdate() {
       alert("تم تحديث البيانات بنجاح!");
       currentUser = {
         ...currentUser,
-        name: newName,
+        userName: newName,
         password: newPassword
       };
       document.getElementById('update-form').style.display = 'none';
@@ -1616,7 +1614,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
   }
-
+  const swearingCheckbox = document.getElementById('swearingCheckbox');
+  if (swearingCheckbox) {
+    swearingCheckbox.addEventListener('change', checkFormAvailability);
+  }
     checkFormAvailability();
     loadReports();
     loadAccounts();
