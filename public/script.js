@@ -132,7 +132,7 @@ async function login() {
       }
 
       currentUser = user;
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      //localStorage.setItem('currentUser', JSON.stringify(user));
       if (user.isAdmin) {
           showAdminBox();
       } else if (!user.approved) {
@@ -1163,8 +1163,16 @@ async function rejectAccount(nameToReject) {
 }
 
 function isWednesday() {
-  const today = new Date().getDay(); // 0 = Sunday, 3 = Wednesday
-  return today === 3;
+  // Get current UTC time (server time)
+  const now = new Date();
+  // Convert to Oman time (UTC+4)
+  const omanTime = new Date(now.getTime() + (4 * 60 * 60 * 1000));
+  const day = omanTime.getDay(); // 0 = Sunday, 3 = Wednesday, 4 = Thursday
+  const hours = omanTime.getHours();
+
+  // Wednesday: any time
+  // Thursday: only before 11:00 AM
+  return (day === 3) || (day === 4 && hours < 11);
 }
 
 function checkFormAvailability() {
@@ -1180,7 +1188,30 @@ function checkFormAvailability() {
     
     // Update button text based on the day
     if (!isWednesdayToday) {
-      submitBtn.textContent = '🕓 متاح فقط يوم الأربعاء';
+        const now = new Date();
+        const omanNow = new Date(now.getTime() + (4 * 60 * 60 * 1000));
+        const year = omanNow.getFullYear();
+        const month = omanNow.getMonth();
+        const day = omanNow.getDate();
+        const weekday = omanNow.getDay();
+
+        // Find next Wednesday
+        let daysToWednesday = (3 - weekday + 7) % 7;
+        let wednesday = new Date(omanNow);
+        wednesday.setDate(day + daysToWednesday);
+        wednesday.setHours(0, 0, 0, 0);
+
+        // Find next Thursday 11:00 AM
+        let daysToThursday = (4 - weekday + 7) % 7;
+        let thursday = new Date(omanNow);
+        thursday.setDate(day + daysToThursday);
+        thursday.setHours(11, 0, 0, 0);
+
+        // Format dates in Arabic (simple version)
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const wednesdayStr = wednesday.toLocaleDateString('ar-EG', options) + ' 00:00';
+        const thursdayStr = thursday.toLocaleDateString('ar-EG', options) + ' 11:00';
+        submitBtn.textContent = `🕓 متاح فقط في:\nمن ${wednesdayStr}\nإلى ${thursdayStr}`;
     } else {
       submitBtn.textContent = 'إرسال التقرير';
     }
