@@ -1196,9 +1196,7 @@ function checkFormAvailability() {
     thursday.setDate(day + daysToThursday);
     thursday.setHours(13, 0, 0, 0);
     // ...existing code...
-        const thursdayStr = thursday.toLocaleDateString('ar-EG', options) + ' 13:00';
-        submitBtn.textContent = `🕓 متاح فقط في:\nمن ${wednesdayStr}\nإلى ${thursdayStr}`;
- 
+
   if (!isWindowOpen) {
     const omanNow = getOmanNow();
     const weekday = omanNow.getUTCDay();
@@ -1225,9 +1223,9 @@ function checkFormAvailability() {
     const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Muscat' };
 
     const wednesdayStr = `${wednesday.toLocaleDateString('ar-EG', dateOptions)} ${wednesday.toLocaleTimeString('ar-EG', timeOptions)}`;
-    const thursdayStr  = `${thursday.toLocaleDateString('ar-EG', dateOptions)} ${thursday.toLocaleTimeString('ar-EG', timeOptions)}`;
-
-    submitBtn.textContent = `🕓 متاح فقط في: من ${wednesdayStr} إلى ${thursdayStr}`;
+        const thursdayStr = thursday.toLocaleDateString('ar-EG', options) + ' 13:00';
+        submitBtn.textContent = `🕓 متاح فقط في:\nمن ${wednesdayStr}\nإلى ${thursdayStr}`;
+ 
   } else {
     submitBtn.textContent = 'إرسال التقرير';
   }
