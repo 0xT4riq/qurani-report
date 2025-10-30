@@ -1161,70 +1161,75 @@ async function rejectAccount(nameToReject) {
     alert(`خطأ: ${error.message}`);
   }
 }
-function isWednesday() {
-  // Build Oman time from UTC to avoid double-shifting client/local timezone
-  const now = new Date();
-  const omanTime = new Date(Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    now.getUTCHours() + 4,
-    now.getUTCMinutes(),
-    now.getUTCSeconds()
-  ));
-  const day = omanTime.getDay(); // 0 = Sunday, 3 = Wednesday, 4 = Thursday
-  const hours = omanTime.getHours();
-
-  // Wednesday: any time
-  // Thursday: only before 11:00 AM (Oman)
-  return (day === 3) || (day === 4 && hours < 13);
+function getOmanNow() {
+    const now = new Date();
+    return new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours() + 4,
+        now.getUTCMinutes(),
+        now.getUTCSeconds()
+    ));
 }
-// ...existing code...
+
+function isWednesday() {
+  const omanTime = getOmanNow();
+  const day = omanTime.getUTCDay ? omanTime.getUTCDay() : omanTime.getDay(); // 0=Sun,3=Wed,4=Thu
+  const hours = omanTime.getUTCHours ? omanTime.getUTCHours() : omanTime.getHours();
+  // Wednesday any time, Thursday before 11:00 (Oman)
+  return (day === 3) || (day === 4 && hours < 11);
+}
+
 function checkFormAvailability() {
-  const isWednesdayToday = isWednesday();
+  const isWindowOpen = isWednesday();
   const swearingCheckbox = document.getElementById('swearingCheckbox');
   document.getElementById('report-form').style.display = 'block';
   const submitBtn = document.querySelector('#report-form button[onclick="submitReport()"]');
-  if (submitBtn) {
-    const canSubmit = isWednesdayToday && (swearingCheckbox ? swearingCheckbox.checked : false);
-    submitBtn.disabled = !canSubmit;
-    submitBtn.style.opacity = canSubmit ? '1' : '0.5';
-    submitBtn.style.cursor = canSubmit ? 'pointer' : 'not-allowed';
-    
-    // Update button text based on the day/window
-    if (!isWednesdayToday) {
-        // Use same UTC->Oman conversion
-        const now = new Date();
-        const omanNow = new Date(Date.UTC(
-          now.getUTCFullYear(),
-          now.getUTCMonth(),
-          now.getUTCDate(),
-          now.getUTCHours() + 4,
-          now.getUTCMinutes(),
-          now.getUTCSeconds()
-        ));
-        const day = omanNow.getDate();
-        const weekday = omanNow.getDay();
+  if (!submitBtn) return;
 
-        // Find next Wednesday (Oman)
-        let daysToWednesday = (3 - weekday + 7) % 7;
-        let wednesday = new Date(omanNow);
-        wednesday.setDate(omanNow.getDate() + daysToWednesday);
-        wednesday.setHours(0, 0, 0, 0);
-
-        // Find next Thursday 11:00 AM (Oman)
-        let daysToThursday = (4 - weekday + 7) % 7;
-        let thursday = new Date(omanNow);
-        thursday.setDate(omanNow.getDate() + daysToThursday);
-        thursday.setHours(11, 0, 0, 0);
-
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const wednesdayStr = wednesday.toLocaleDateString('ar-EG', options) + ' 00:00';
-        const thursdayStr = thursday.toLocaleDateString('ar-EG', options) + ' 11:00';
+  const canSubmit = isWindowOpen && (swearingCheckbox ? swearingCheckbox.checked : false);
+  submitBtn.disabled = !canSubmit;
+  submitBtn.style.opacity = canSubmit ? '1' : '0.5';
+  submitBtn.style.cursor = canSubmit ? 'pointer' : 'not-allowed';
+      let thursday = new Date(omanNow);
+    thursday.setDate(day + daysToThursday);
+    thursday.setHours(13, 0, 0, 0);
+    // ...existing code...
+        const thursdayStr = thursday.toLocaleDateString('ar-EG', options) + ' 13:00';
         submitBtn.textContent = `🕓 متاح فقط في:\nمن ${wednesdayStr}\nإلى ${thursdayStr}`;
-    } else {
-      submitBtn.textContent = 'إرسال التقرير';
-    }
+ 
+  if (!isWindowOpen) {
+    const omanNow = getOmanNow();
+    const weekday = omanNow.getUTCDay();
+
+    // Next Wednesday (Oman) at 00:00
+    const daysToWednesday = (3 - weekday + 7) % 7 || 7;
+    const wednesday = new Date(Date.UTC(
+      omanNow.getUTCFullYear(),
+      omanNow.getUTCMonth(),
+      omanNow.getUTCDate() + daysToWednesday,
+      0, 0, 0
+    ));
+
+    // Thursday after that at 11:00 (Oman)
+    const thursday = new Date(Date.UTC(
+      wednesday.getUTCFullYear(),
+      wednesday.getUTCMonth(),
+      wednesday.getUTCDate() + 1,
+      11, 0, 0
+    ));
+
+    // Format using Oman timezone to avoid client local shift
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Muscat' };
+    const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Muscat' };
+
+    const wednesdayStr = `${wednesday.toLocaleDateString('ar-EG', dateOptions)} ${wednesday.toLocaleTimeString('ar-EG', timeOptions)}`;
+    const thursdayStr  = `${thursday.toLocaleDateString('ar-EG', dateOptions)} ${thursday.toLocaleTimeString('ar-EG', timeOptions)}`;
+
+    submitBtn.textContent = `🕓 متاح فقط في: من ${wednesdayStr} إلى ${thursdayStr}`;
+  } else {
+    submitBtn.textContent = 'إرسال التقرير';
   }
 }
 let accounts = [];
