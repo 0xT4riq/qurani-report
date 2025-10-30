@@ -1175,16 +1175,18 @@ function getOmanNow() {
 
 function isWednesday() {
   const omanTime = getOmanNow();
-  const day = omanTime.getUTCDay ? omanTime.getUTCDay() : omanTime.getDay(); // 0=Sun,3=Wed,4=Thu
-  const hours = omanTime.getUTCHours ? omanTime.getUTCHours() : omanTime.getHours();
-  // Wednesday any time, Thursday before 11:00 (Oman)
-  return (day === 3) || (day === 4 && hours < 11);
+  const day = omanTime.getUTCDay(); // 0=Sun,3=Wed,4=Thu
+  const hours = omanTime.getUTCHours();
+  // Wednesday any time, Thursday before 13:00 (Oman)
+  return (day === 3) || (day === 4 && hours < 13);
 }
 
 function checkFormAvailability() {
   const isWindowOpen = isWednesday();
   const swearingCheckbox = document.getElementById('swearingCheckbox');
-  document.getElementById('report-form').style.display = 'block';
+  const reportForm = document.getElementById('report-form');
+  if (reportForm) reportForm.style.display = 'block';
+
   const submitBtn = document.querySelector('#report-form button[onclick="submitReport()"]');
   if (!submitBtn) return;
 
@@ -1192,10 +1194,6 @@ function checkFormAvailability() {
   submitBtn.disabled = !canSubmit;
   submitBtn.style.opacity = canSubmit ? '1' : '0.5';
   submitBtn.style.cursor = canSubmit ? 'pointer' : 'not-allowed';
-      let thursday = new Date(omanNow);
-    thursday.setDate(day + daysToThursday);
-    thursday.setHours(13, 0, 0, 0);
-    // ...existing code...
 
   if (!isWindowOpen) {
     const omanNow = getOmanNow();
@@ -1210,22 +1208,21 @@ function checkFormAvailability() {
       0, 0, 0
     ));
 
-    // Thursday after that at 11:00 (Oman)
+    // Thursday after that at 13:00 (Oman)
     const thursday = new Date(Date.UTC(
       wednesday.getUTCFullYear(),
       wednesday.getUTCMonth(),
       wednesday.getUTCDate() + 1,
-      11, 0, 0
+      13, 0, 0
     ));
 
-    // Format using Oman timezone to avoid client local shift
     const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Muscat' };
     const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Muscat' };
 
     const wednesdayStr = `${wednesday.toLocaleDateString('ar-EG', dateOptions)} ${wednesday.toLocaleTimeString('ar-EG', timeOptions)}`;
-        const thursdayStr = thursday.toLocaleDateString('ar-EG', options) + ' 13:00';
-        submitBtn.textContent = `🕓 متاح فقط في:\nمن ${wednesdayStr}\nإلى ${thursdayStr}`;
- 
+    const thursdayStr  = `${thursday.toLocaleDateString('ar-EG', dateOptions)} ${thursday.toLocaleTimeString('ar-EG', timeOptions)}`;
+
+    submitBtn.textContent = `🕓 متاح فقط في: من ${wednesdayStr} إلى ${thursdayStr}`;
   } else {
     submitBtn.textContent = 'إرسال التقرير';
   }
