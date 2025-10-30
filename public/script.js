@@ -1178,7 +1178,7 @@ function isWednesday() {
   const day = omanTime.getUTCDay(); // 0=Sun,3=Wed,4=Thu
   const hours = omanTime.getUTCHours();
   // Wednesday any time, Thursday before 13:00 (Oman)
-  return (day === 3) || (day === 4 && hours < 13);
+  return (day === 3) || (day === 4 && hours < 14);
 }
 
 function checkFormAvailability() {
