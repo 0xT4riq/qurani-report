@@ -1161,20 +1161,25 @@ async function rejectAccount(nameToReject) {
     alert(`خطأ: ${error.message}`);
   }
 }
-
 function isWednesday() {
-  // Get current UTC time (server time)
+  // Build Oman time from UTC to avoid double-shifting client/local timezone
   const now = new Date();
-  // Convert to Oman time (UTC+4)
-  const omanTime = new Date(now.getTime() + (4 * 60 * 60 * 1000));
+  const omanTime = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours() + 4,
+    now.getUTCMinutes(),
+    now.getUTCSeconds()
+  ));
   const day = omanTime.getDay(); // 0 = Sunday, 3 = Wednesday, 4 = Thursday
   const hours = omanTime.getHours();
 
   // Wednesday: any time
-  // Thursday: only before 11:00 AM
-  return (day === 3) || (day === 4 && hours < 11);
+  // Thursday: only before 11:00 AM (Oman)
+  return (day === 3) || (day === 4 && hours < 13);
 }
-
+// ...existing code...
 function checkFormAvailability() {
   const isWednesdayToday = isWednesday();
   const swearingCheckbox = document.getElementById('swearingCheckbox');
@@ -1186,28 +1191,33 @@ function checkFormAvailability() {
     submitBtn.style.opacity = canSubmit ? '1' : '0.5';
     submitBtn.style.cursor = canSubmit ? 'pointer' : 'not-allowed';
     
-    // Update button text based on the day
+    // Update button text based on the day/window
     if (!isWednesdayToday) {
+        // Use same UTC->Oman conversion
         const now = new Date();
-        const omanNow = new Date(now.getTime() + (4 * 60 * 60 * 1000));
-        const year = omanNow.getFullYear();
-        const month = omanNow.getMonth();
+        const omanNow = new Date(Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate(),
+          now.getUTCHours() + 4,
+          now.getUTCMinutes(),
+          now.getUTCSeconds()
+        ));
         const day = omanNow.getDate();
         const weekday = omanNow.getDay();
 
-        // Find next Wednesday
+        // Find next Wednesday (Oman)
         let daysToWednesday = (3 - weekday + 7) % 7;
         let wednesday = new Date(omanNow);
-        wednesday.setDate(day + daysToWednesday);
+        wednesday.setDate(omanNow.getDate() + daysToWednesday);
         wednesday.setHours(0, 0, 0, 0);
 
-        // Find next Thursday 11:00 AM
+        // Find next Thursday 11:00 AM (Oman)
         let daysToThursday = (4 - weekday + 7) % 7;
         let thursday = new Date(omanNow);
-        thursday.setDate(day + daysToThursday);
+        thursday.setDate(omanNow.getDate() + daysToThursday);
         thursday.setHours(11, 0, 0, 0);
 
-        // Format dates in Arabic (simple version)
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const wednesdayStr = wednesday.toLocaleDateString('ar-EG', options) + ' 00:00';
         const thursdayStr = thursday.toLocaleDateString('ar-EG', options) + ' 11:00';
