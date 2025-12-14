@@ -1,13 +1,24 @@
-const express = require('express');
-const archiver = require('archiver');
-const fs = require('fs');
-const path = require('path');
-const webpush = require('web-push');
-const multer = require('multer');
-const unzipper = require('unzipper');
-const app = express();
-const PORT = 3000;
-const { google } = require('googleapis');
+
+import express from 'express';
+import archiver from 'archiver';
+import fs from 'fs';
+import path from 'path';
+import webpush from 'web-push';
+import multer from 'multer';
+import unzipper from 'unzipper';
+import cron from 'node-cron';
+import { google } from 'googleapis';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve('./.env') });
+console.log(process.env);
+console.log({
+  SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  SUPABASE_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'OK' : 'MISSING'
+});
+
+
 import { supabase } from './supabaseClient.js'; 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -332,7 +343,6 @@ app.post('/api/save-subscription', express.json(), async (req, res) => {
   }
 });
 */
-const cron = require('node-cron');
 const { sendWednesdayReminder } = require('./reminder');
 
 // الأربعاء - الساعة 9:00 صباحًا

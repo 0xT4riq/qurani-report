@@ -348,6 +348,15 @@ async function displayMyReports() {
     console.error(error);
   }
 }
+function groupReportsBySurah(reports) {
+  return reports.reduce((groups, report) => {
+    if (!groups[report.surah]) {
+      groups[report.surah] = [];
+    }
+    groups[report.surah].push(report);
+    return groups;
+  }, {});
+}
 
 // Displays all reports for the admin, with search/filter
 async function displayReports() {
@@ -386,24 +395,48 @@ async function displayReports() {
     countDiv.style.color = 'var(--primary-dark)';
     countDiv.textContent = `عدد التقارير المعروضة: ${currentReports.length}`;
     fragment.appendChild(countDiv);
+    const reportsBySurah = groupReportsBySurah(currentReports);
 
-  currentReports.forEach((rep, idx) => {
+  Object.entries(reportsBySurah).forEach(([surahName, reports]) => {
+  // ─── Surah Folder ─────────────────────
+  const surahSection = document.createElement('div');
+  surahSection.className = 'surah-folder';
+
+  const surahHeader = document.createElement('div');
+  surahHeader.className = 'surah-header';
+  surahHeader.setAttribute('role', 'button');
+  surahHeader.setAttribute('aria-expanded', 'false');
+  surahHeader.innerHTML = `
+    📁 سورة ${surahName}
+    <span class="dropdown-arrow">▼</span>
+  `;
+
+  const surahContent = document.createElement('div');
+  surahContent.className = 'surah-content';
+  surahContent.style.display = 'none';
+
+  // Toggle Surah folder
+  surahHeader.addEventListener('click', () => {
+    const expanded = surahHeader.getAttribute('aria-expanded') === 'true';
+    surahHeader.setAttribute('aria-expanded', String(!expanded));
+    surahContent.style.display = expanded ? 'none' : 'block';
+    surahHeader.querySelector('.dropdown-arrow').textContent = expanded ? '▼' : '▲';
+  });
+
+    // ─── Reports inside Surah ─────────────
+    reports.forEach(rep => {
       const section = document.createElement('div');
       section.classList.add('report-section', 'collapsible-report');
 
-      // Header (clickable)
       const header = document.createElement('div');
       header.className = 'report-header';
-      header.tabIndex = 0;
-      header.setAttribute('role', 'button');
       header.setAttribute('aria-expanded', 'false');
       header.innerHTML = `
-        <strong>${rep.name}</strong> - ${rep.week} - سورة ${rep.surah}
+        <strong>${rep.name}</strong> - ${rep.week}
         <span class="report-date">(${formatArabicDate(rep.date)})</span>
         <span class="dropdown-arrow">▼</span>
       `;
 
-      // Details (hidden by default)
       const details = document.createElement('div');
       details.className = 'report-details';
       details.style.display = 'none';
@@ -412,13 +445,12 @@ async function displayReports() {
           ${generateChecklistHtml(rep)}
         </ul>
         <div class="action-buttons">
-          <button aria-label="تعديل التقرير" onclick="editReportForm('${rep.id}')">✏️ تعديل</button>
-          <button aria-label="تحميل التقرير PDF" onclick="exportPDFById('${rep.id}')">📄 تحميل PDF</button>
-          <button aria-label="حذف التقرير" class="delete-btn" onclick="deleteReportById('${rep.id}')">🗑️ حذف</button>
+          <button onclick="editReportForm('${rep.id}')">✏️ تعديل</button>
+          <button onclick="exportPDFById('${rep.id}')">📄 تحميل PDF</button>
+          <button class="delete-btn" onclick="deleteReportById('${rep.id}')">🗑️ حذف</button>
         </div>
       `;
 
-      // Toggle logic
       header.addEventListener('click', () => {
         const expanded = header.getAttribute('aria-expanded') === 'true';
         header.setAttribute('aria-expanded', String(!expanded));
@@ -428,11 +460,13 @@ async function displayReports() {
 
       section.appendChild(header);
       section.appendChild(details);
-      fragment.appendChild(section);
+      surahContent.appendChild(section);
     });
 
-    container.innerHTML = '';
-    container.appendChild(fragment);
+    surahSection.appendChild(surahHeader);
+    surahSection.appendChild(surahContent);
+    fragment.appendChild(surahSection);
+  });
 
   } catch (error) {
     container.innerHTML = `<div class="error-state">حدث خطأ أثناء تحميل التقارير: ${error.message}</div>`;
