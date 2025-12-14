@@ -467,6 +467,8 @@ async function displayReports() {
     surahSection.appendChild(surahContent);
     fragment.appendChild(surahSection);
   });
+  container.innerHTML = '';
+  container.appendChild(fragment);
 
   } catch (error) {
     container.innerHTML = `<div class="error-state">حدث خطأ أثناء تحميل التقارير: ${error.message}</div>`;
