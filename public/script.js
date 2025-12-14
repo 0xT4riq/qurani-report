@@ -1217,7 +1217,7 @@ function checkFormAvailability() {
     ));
 
     const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Muscat' };
-    const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Muscat' };
+    const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Muscat' };
 
     const wednesdayStr = `${wednesday.toLocaleDateString('ar-EG', dateOptions)} ${wednesday.toLocaleTimeString('ar-EG', timeOptions)}`;
     const thursdayStr  = `${thursday.toLocaleDateString('ar-EG', dateOptions)} ${thursday.toLocaleTimeString('ar-EG', timeOptions)}`;
