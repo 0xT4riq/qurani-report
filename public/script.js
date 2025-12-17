@@ -267,7 +267,7 @@ async function submitReport() {
     displayMyReports(); // إعادة تحميل التقارير
 
   } catch (error) {
-    alert('مشكلة في الاتصال بالسيرفر.');
+    alert('مشكلة في الاتصال بالسيرفر.', error);
     console.error(error);
   }
 }

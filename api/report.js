@@ -23,14 +23,23 @@ export default async function handler(req, res) {
   } else if (req.method === 'POST') {
     const newReport = req.body;
 
-    const { data: exists } = await supabase
+    const { data: exists, error: existsError } = await supabase
       .from('reports')
       .select('*')
       .eq('name', newReport.name)
-      .eq('week', newReport.week);
+      .eq('week', newReport.week)
+      .eq('surah', newReport.surah)
+      .limit(1);
 
+    if (existsError) {
+      console.error('API Error: ', existsError);
+      return res.status(500).json({ success: false, message: existsError.message });
+    }
     if (exists && exists.length > 0) {
-      return res.status(400).json({ success: false, message: 'لقد قمت بإرسال تقرير لهذا الأسبوع مسبقًا.' });
+      return res.status(400).json({
+        success: false,
+        message: 'لقد قمت بإرسال تقرير لهذه السورة في هذا الأسبوع مسبقًا.',
+      });
     }
 
     const { error } = await supabase.from('reports').insert([newReport]);
