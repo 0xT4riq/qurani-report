@@ -389,9 +389,7 @@ async function displayReports() {
       container.innerHTML = '<div class="empty-state">لا توجد تقارير مطابقة للبحث أو المعايير المحددة.</div>';
       return;
     }
-    if (!weekFilter) {
-      filteredReports.sort((a, b) => extractWeekNumber(b.week) - extractWeekNumber(a.week));
-    }
+
     let filteredReports = currentReports.filter(rep => {
       const nameMatch = !nameFilter || rep.name.toLowerCase().includes(nameFilter);
       const weekMatch = !weekFilter || rep.week == weekFilter;
@@ -399,7 +397,9 @@ async function displayReports() {
       const wilayahMatch = !wilayahFilter || rep.wilayah == wilayahFilter; // ✅ new
       return nameMatch && weekMatch && surahMatch && wilayahMatch;
     });
-
+    if (!weekFilter) {
+      filteredReports.sort((a, b) => extractWeekNumber(b.week) - extractWeekNumber(a.week));
+    }
     const fragment = document.createDocumentFragment();
         // Display the number of reports above the list
     const countDiv = document.createElement('div');
