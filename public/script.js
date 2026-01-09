@@ -1867,7 +1867,6 @@ function populateWilayahFilter() {
 }
 
 // Call this once after globalData is loaded
-populateWilayahFilter();
 
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {
