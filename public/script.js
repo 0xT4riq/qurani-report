@@ -217,7 +217,10 @@ async function submitReport() {
     alert('الرجاء تسجيل الدخول.');
     return;
   }
-
+  if (!currentUser.wilayah) {
+    alert('الرجاء اختيار ولايتك أولاً');
+    return;
+  }
   const surah = document.getElementById('surahSelect').value;
   const week = document.getElementById('weekSelect').value;
   /*
@@ -251,6 +254,7 @@ async function submitReport() {
     date: new Date().toISOString().split('T')[0], // التاريخ اليوم YYYY-MM-DD
     surah,
     week,
+    wilayah: currentUser.wilayah,
   };
   const checklist = globalData.reportChecklist.forEach(item => {
     const checkbox = document.getElementById(item.id);

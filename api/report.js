@@ -3,13 +3,14 @@ import { supabase } from '../supabaseClient.js';
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
-    const { name, week, surah } = req.query;
+    const { name, week, surah, wilayah } = req.query;
 
     let query = supabase.from('reports').select('*');
 
     if (name) query = query.ilike('name', `%${name}%`);
     if (week) query = query.eq('week', week);
     if (surah) query = query.eq('surah', surah);
+    if (wilayah) query = query.eq('wilayah', wilayah);
 
     const { data, error } = await query;
 
@@ -29,6 +30,7 @@ export default async function handler(req, res) {
       .eq('name', newReport.name)
       .eq('week', newReport.week)
       .eq('surah', newReport.surah)
+      .eq('wilayah', newReport.wilayah)
       .limit(1);
 
     if (existsError) {
