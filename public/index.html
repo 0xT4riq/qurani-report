@@ -63,7 +63,6 @@
     <div id="report-box" class="hidden">
       <h3 id="welcome-message"></h3> 
       <button onclick="logout()" class="logout-btn">تسجيل الخروج</button>
-
       <button onclick="subscribeToNotifications()" id="subscribeBtn" style="margin-top: 10px;">🔔 الاشتراك في التنبيهات الأسبوعية</button>
 
       <div id="update-info-form"style="margin-top: 20px; padding: 10px;">
@@ -73,9 +72,10 @@
         <input type="text" id="update-username" />
 
         <label for="update-password">كلمة المرور:</label>
-        <input type="password" id="update-password" />
+        <input type="password" id="update-password" placeholder="اتركه فارغاً إذا كنت لا تريد تغيير كلمة المرور" />
 
         <button onclick="submitUpdate()">💾 حفظ التغييرات</button>
+        <button onclick="cancelUpdate()" class="logout-btn">إلغاء</button> 
       </div>
       <hr>
       </div>

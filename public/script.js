@@ -1636,32 +1636,62 @@ navigator.serviceWorker.addEventListener('message', (event) => {
   }
 });
 function showUpdateForm() {
-  const user = currentUser
+  const user = currentUser;
   if (!user) return alert("لم يتم تسجيل الدخول!");
-
-  document.getElementById('update-username').value = user.userName;
-  document.getElementById('update-password').value = user.password;
-
+  
+  document.getElementById('update-username').value = user.userName || '';
+  document.getElementById('update-password').value = '';  // ✅ Leave empty - optional field
+  
   const form = document.getElementById('update-form');
   form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
 }
-
+function cancelUpdate() {
+  document.getElementById('update-form').style.display = 'none';
+  // Optionally clear the fields
+  document.getElementById('update-username').value = '';
+  document.getElementById('update-password').value = '';
+}
 function submitUpdate() {
-  const newName = document.getElementById('update-username').value;
-  const newPassword = document.getElementById('update-password').value;
-  const user = currentUser
+  const newName = document.getElementById('update-username').value.trim();
+  const newPassword = document.getElementById('update-password').value.trim();
+  const user = currentUser;
+  
   if (!user) return alert("لم يتم تسجيل الدخول!");
-
+  
+  // ✅ Validate: at least name must be provided
+  if (!newName) {
+    return alert("الرجاء إدخال اسم المستخدم");
+  }
+  
+  // ✅ Confirm before saving
+  const changes = [];
+  if (newName !== user.userName) changes.push('الاسم');
+  if (newPassword) changes.push('كلمة المرور');
+  
+  if (changes.length === 0) {
+    return alert("لم يتم إجراء أي تغييرات");
+  }
+  
+  if (!confirm(`هل أنت متأكد من تحديث: ${changes.join(' و ')}؟`)) {
+    return;
+  }
+  
+  // ✅ Build update object - only include password if provided
+  const updateData = {
+    oldName: user.userName,
+    newName: newName
+  };
+  
+  if (newPassword) {
+    updateData.newPassword = newPassword;
+  }
+  
   fetch('/api/update-account', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      oldName: user.userName,
-      newName,
-      newPassword
-    })
+    body: JSON.stringify(updateData)
   })
   .then(res => res.json())
   .then(data => {
@@ -1670,14 +1700,20 @@ function submitUpdate() {
       currentUser = {
         ...currentUser,
         userName: newName,
-        password: newPassword
+        password: newPassword || currentUser.password
       };
       document.getElementById('update-form').style.display = 'none';
+      document.getElementById('update-password').value = '';
     } else {
       alert("خطأ: " + data.message);
     }
+  })
+  .catch(error => {
+    console.error('Update error:', error);
+    alert("حدث خطأ أثناء التحديث");
   });
 }
+
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {
     if ('serviceWorker' in navigator) {
