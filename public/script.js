@@ -1762,11 +1762,44 @@ function submitUpdate() {
     alert("حدث خطأ أثناء التحديث");
   });
 }
-function showStateSelectionPopup() {
+async function showStateSelectionPopup() {
   document.getElementById('stateSelectionPopup').style.display = 'block';
-  document.getElementById('govSelect').value = '';
-  document.getElementById('wilayaSelect').innerHTML = '<option value="">اختر الولاية...</option>';
-  document.getElementById('wilayaSelect').disabled = true;
+
+  const govSelect = document.getElementById('govSelect');
+  const wilayaSelect = document.getElementById('wilayaSelect');
+
+  // Clear previous options
+  govSelect.innerHTML = '<option value="">اختر المحافظة...</option>';
+  wilayaSelect.innerHTML = '<option value="">اختر الولاية...</option>';
+  wilayaSelect.disabled = true;
+
+  // Populate governorates
+  (globalData.governorates || []).forEach(gov => {
+    const option = document.createElement('option');
+    option.value = gov;
+    option.textContent = gov;
+    govSelect.appendChild(option);
+  });
+
+  // When governorate changes, populate wilayats
+  govSelect.onchange = () => {
+    const selectedGov = govSelect.value;
+    wilayaSelect.innerHTML = '<option value="">اختر الولاية...</option>';
+
+    if (!selectedGov || !globalData.wilayat[selectedGov]) {
+      wilayaSelect.disabled = true;
+      return;
+    }
+
+    globalData.wilayat[selectedGov].forEach(w => {
+      const option = document.createElement('option');
+      option.value = w;
+      option.textContent = w;
+      wilayaSelect.appendChild(option);
+    });
+
+    wilayaSelect.disabled = false;
+  };
 }
 
 function hideStateSelectionPopup() {
