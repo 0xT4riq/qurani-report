@@ -1855,7 +1855,7 @@ function populateWilayahFilter() {
 
   if (!globalData || !globalData.wilayat) return;
 
-  for (const gov of globalData.governorates) {
+  globalData.governorates.forEach(gov => {
     const wilayats = globalData.wilayat[gov] || [];
     wilayats.forEach(w => {
       const option = document.createElement('option');
@@ -1863,7 +1863,7 @@ function populateWilayahFilter() {
       option.textContent = w;
       select.appendChild(option);
     });
-  }
+  });
 }
 
 // Call this once after globalData is loaded
