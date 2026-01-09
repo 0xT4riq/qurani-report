@@ -1,3 +1,5 @@
+// api/global-data.js
+
 import { supabase } from '../supabaseClient.js';
 
 export default async function handler(req, res) {
@@ -19,19 +21,32 @@ export default async function handler(req, res) {
 
   // Handle PUT request to update global data
   else if (req.method === 'PUT') {
-    const newData = req.body;
+    const {
+      weeks,
+      surahs,
+      reportChecklist,
+      governorates,
+      wilayat
+    } = req.body;
 
-    if (!newData.weeks || !newData.surahs || !newData.reportChecklist) {
+    // Required core data
+    if (!weeks || !surahs || !reportChecklist) {
       return res.status(400).json({ error: 'بيانات غير كاملة' });
     }
 
+    const updatePayload = {
+      weeks,
+      surahs,
+      reportChecklist
+    };
+
+    // Optional (only update if provided)
+    if (governorates) updatePayload.governorates = governorates;
+    if (wilayat) updatePayload.wilayat = wilayat;
+
     const { data, error } = await supabase
       .from('global_data')
-      .update({
-        weeks: newData.weeks,
-        surahs: newData.surahs,
-        reportChecklist: newData.reportChecklist
-      })
+      .update(updatePayload)
       .eq('id', 1)
       .select();
 

@@ -17,6 +17,31 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- ✅ Wilayah Selection Popup -->
+  <div id="stateSelectionPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:9999; direction:rtl;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:30px; border-radius:10px; max-width:400px; width:90%;">
+      
+      <h3 style="text-align:center; margin-bottom:15px;">🌍 مرحباً بك!</h3>
+      <p style="text-align:center; margin-bottom:20px;">الرجاء اختيار ولايتك لإكمال ملفك الشخصي</p>
+
+      <!-- Governorate -->
+      <label>المحافظة</label>
+      <select id="govSelect" style="width:100%; padding:10px; margin-bottom:15px;">
+        <option value="">اختر المحافظة...</option>
+      </select>
+
+      <!-- Wilayah -->
+      <label>الولاية</label>
+      <select id="wilayaSelect" disabled style="width:100%; padding:10px; margin-bottom:20px;">
+        <option value="">اختر الولاية...</option>
+      </select>
+
+      <button onclick="saveWilayah()" style="width:100%; padding:12px; background:#27ae60; color:white; border:none; border-radius:5px;">
+        💾 حفظ
+      </button>
+
+    </div>
+  </div>
   <div id="notification-icon-container" style="position: fixed; top: 10px; left: 10px;">
   <button onclick="toggleNotificationList()" id="notification-btn">
     🔔 <span id="notification-count" style="color: red; font-weight: bold;"></span>
@@ -152,7 +177,17 @@
 
         <label>السور (كل سورة في سطر جديد):</label><br/>
         <textarea id="adminSurahsInput" rows="10" style="width: 100%;"></textarea>
+        <hr>
+        <h4>المحافظات والولايات</h4>
 
+        <label>المحافظات (كل محافظة في سطر):</label>
+        <textarea id="adminGovernoratesInput" rows="5" style="width:100%;"></textarea>
+
+        <label>الولايات (صيغة: محافظة: ولاية1، ولاية2):</label>
+        <textarea id="adminWilayatInput" rows="8" style="width:100%;"
+        placeholder="شمال الباطنة: صحار، شناص، لوى
+        جنوب الباطنة: الرستاق، بركاء"></textarea>
+        <hr>
         <label>قائمة المهام:</label>
         <div id="adminChecklistContainer"></div>
         <button onclick="addChecklistItem()">+ إضافة بند جديد</button>
@@ -179,6 +214,11 @@
           <select id="adminReportSurahFilter" onchange="displayReports()">
               <option value="">جميع السور</option>
           </select>
+          <label for="adminReportWilayahFilter">بحث حسب الولاية:</label>
+          <select id="adminReportWilayahFilter" onchange="displayReports()">
+            <option value="">جميع الولايات</option>
+          </select>
+
 
           <button id="exportFilteredReportsBtn" onclick="exportFilteredPDF('admin')">📄 تحميل التقارير حسب البحث PDF</button>
           <button id="exportActivitySummaryBtn" onclick="generateActivitySummary()">🏅 تحميل التقرير المختصر PDF</button>

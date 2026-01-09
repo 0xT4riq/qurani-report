@@ -139,7 +139,12 @@ async function login() {
           alert('حسابك في انتظار موافقة المشرف.');
           logout();
       } else {
-          showReportBox();
+          // ✅ Check if user has state, if not show popup
+          if (!user.state || user.state === null || user.state === '') {
+              showStateSelectionPopup();
+          } else {
+              showReportBox();
+          }
       }
   } catch (error) {
       alert('خطأ في الاتصال بالسيرفر.');
@@ -366,11 +371,13 @@ async function displayReports() {
   const nameFilter = document.getElementById('searchInput')?.value?.trim().toLowerCase() || '';
   const weekFilter = document.getElementById('adminReportWeekFilter')?.value || '';
   const surahFilter = document.getElementById('adminReportSurahFilter')?.value || '';
+  const wilayahFilter = document.getElementById('adminReportWilayahFilter').value || '';
 
   const queryParams = new URLSearchParams();
   if (nameFilter) queryParams.append('name', nameFilter);
   if (weekFilter) queryParams.append('week', weekFilter);
   if (surahFilter) queryParams.append('surah', surahFilter);
+  if (wilayahFilter) queryParams.append('wilayah', wilayahFilter);
 
   try {
     const response = await fetch(`/api/reports?${queryParams.toString()}`);
@@ -383,8 +390,15 @@ async function displayReports() {
       return;
     }
     if (!weekFilter) {
-      currentReports.sort((a, b) => extractWeekNumber(b.week) - extractWeekNumber(a.week));
+      filteredReports.sort((a, b) => extractWeekNumber(b.week) - extractWeekNumber(a.week));
     }
+    let filteredReports = currentReports.filter(rep => {
+      const nameMatch = !nameFilter || rep.name.toLowerCase().includes(nameFilter);
+      const weekMatch = !weekFilter || rep.week == weekFilter;
+      const surahMatch = !surahFilter || rep.surah == surahFilter;
+      const wilayahMatch = !wilayahFilter || rep.wilayah == wilayahFilter; // ✅ new
+      return nameMatch && weekMatch && surahMatch && wilayahMatch;
+    });
 
     const fragment = document.createDocumentFragment();
         // Display the number of reports above the list
@@ -393,9 +407,10 @@ async function displayReports() {
     countDiv.style.margin = '16px 0 24px 0';
     countDiv.style.fontWeight = 'bold';
     countDiv.style.color = 'var(--primary-dark)';
-    countDiv.textContent = `عدد التقارير المعروضة: ${currentReports.length}`;
+    countDiv.textContent = `عدد التقارير المعروضة: ${filteredReports.length}`;
     fragment.appendChild(countDiv);
-    const reportsBySurah = groupReportsBySurah(currentReports);
+
+    const reportsBySurah = groupReportsBySurah(filteredReports);
 
   Object.entries(reportsBySurah).forEach(([surahName, reports]) => {
   // ─── Surah Folder ─────────────────────
@@ -1404,6 +1419,18 @@ function openGlobalDataEditor() {
 
   document.getElementById('adminWeeksInput').value = globalData.weeks;
   document.getElementById('adminSurahsInput').value = globalData.surahs.join('\n');
+    // Governorates
+  document.getElementById('adminGovernoratesInput').value =
+    (globalData.governorates || []).join('\n');
+
+  // Wilayat
+  let wilayatText = '';
+  if (globalData.wilayat) {
+    for (const gov in globalData.wilayat) {
+      wilayatText += `${gov}: ${globalData.wilayat[gov].join('، ')}\n`;
+    }
+  }
+  document.getElementById('adminWilayatInput').value = wilayatText.trim();
   renderChecklistAdmin();
 }
 
@@ -1463,6 +1490,25 @@ async function saveGlobalData() {
     .split('\n')
     .map(s => s.trim())
     .filter(s => s.length > 0);
+
+    // Governorates
+  const governorates = document.getElementById('adminGovernoratesInput')
+    .value.split('\n').map(g => g.trim()).filter(Boolean);
+
+  // Wilayat parsing
+  const wilayatLines = document.getElementById('adminWilayatInput')
+    .value.split('\n').filter(Boolean);
+
+  const wilayat = {};
+  wilayatLines.forEach(line => {
+    const [gov, cities] = line.split(':');
+    if (!gov || !cities) return;
+
+    wilayat[gov.trim()] = cities
+      .split('،')
+      .map(w => w.trim())
+      .filter(Boolean);
+  });
   const reportChecklist = gatherChecklistFromAdmin();
 
   if (!weeks || weeks <= 0) {
@@ -1477,6 +1523,9 @@ async function saveGlobalData() {
   globalData.weeks = weeks;
   globalData.surahs = surahs;
   globalData.reportChecklist = reportChecklist;
+  globalData.governorates = governorates;
+  globalData.wilayat = wilayat;
+
 
   try {
     const response = await fetch('/api/global-data', {
@@ -1713,6 +1762,78 @@ function submitUpdate() {
     alert("حدث خطأ أثناء التحديث");
   });
 }
+function showStateSelectionPopup() {
+  document.getElementById('stateSelectionPopup').style.display = 'block';
+  document.getElementById('govSelect').value = '';
+  document.getElementById('wilayaSelect').innerHTML = '<option value="">اختر الولاية...</option>';
+  document.getElementById('wilayaSelect').disabled = true;
+}
+
+function hideStateSelectionPopup() {
+  document.getElementById('stateSelectionPopup').style.display = 'none';
+}
+
+// Save user's selected state
+async function saveWilayah() {
+  const wilayah = document.getElementById('wilayaSelect').value.trim();
+
+  if (!wilayah) {
+    alert('الرجاء اختيار الولاية');
+    return;
+  }
+
+  if (!currentUser) {
+    alert('خطأ: لم يتم تسجيل الدخول');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/update-state', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: currentUser.userName,
+        wilayah: wilayah   // ✅ renamed
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'فشل حفظ الولاية');
+    }
+
+    // Update local user object
+    currentUser.wilayah = wilayah;
+
+    alert('✅ تم حفظ الولاية بنجاح!');
+    hideStateSelectionPopup();
+    showReportBox();
+
+  } catch (error) {
+    console.error(error);
+    alert('حدث خطأ أثناء حفظ الولاية: ' + error.message);
+  }
+}
+function populateWilayahFilter() {
+  const select = document.getElementById('adminReportWilayahFilter');
+  select.innerHTML = '<option value="">جميع الولايات</option>';
+
+  if (!globalData || !globalData.wilayat) return;
+
+  for (const gov of globalData.governorates) {
+    const wilayats = globalData.wilayat[gov] || [];
+    wilayats.forEach(w => {
+      const option = document.createElement('option');
+      option.value = w;
+      option.textContent = w;
+      select.appendChild(option);
+    });
+  }
+}
+
+// Call this once after globalData is loaded
+populateWilayahFilter();
 
 // Initial call to show login form when the page loads
 document.addEventListener("DOMContentLoaded", () => {
@@ -1737,6 +1858,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showLogin(); 
     loadGlobalData();
     populateFormOptions();
+    populateWilayahFilter();
 
 
 });
