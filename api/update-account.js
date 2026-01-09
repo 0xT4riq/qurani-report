@@ -1,8 +1,9 @@
+// api/update-account.js
 import { supabase } from '../supabaseClient.js';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { oldName, newName, newPassword } = req.body;
+    const { oldName, newName, newPassword, newState } = req.body;
     
     if (!oldName) {
       return res.status(400).json({ success: false, message: 'Current user name is required.' });
@@ -31,6 +32,9 @@ export default async function handler(req, res) {
     }
     if (newPassword && newPassword.trim()) {  // ✅ Added trim() check
       updateData.password = newPassword.trim(); // Remember to hash passwords in a real app!
+    }
+    if (newState && newState.trim()) {  // ✅ Added trim() check
+      updateData.wilayah = newState.trim();
     }
     
     // Only proceed with the update if there is data to update

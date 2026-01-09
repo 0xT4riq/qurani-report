@@ -1788,18 +1788,18 @@ async function saveWilayah() {
   }
 
   try {
-    const response = await fetch('/api/update-state', {
+    const response = await fetch('/api/update-account', {  // ✅ use merged endpoint
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: currentUser.userName,
-        wilayah: wilayah   // ✅ renamed
+        oldName: currentUser.userName,  // required by update-account.js
+        newState: wilayah                // ✅ new field for state
       })
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
+    if (!response.ok || !data.success) {
       throw new Error(data.message || 'فشل حفظ الولاية');
     }
 
@@ -1815,6 +1815,7 @@ async function saveWilayah() {
     alert('حدث خطأ أثناء حفظ الولاية: ' + error.message);
   }
 }
+
 function populateWilayahFilter() {
   const select = document.getElementById('adminReportWilayahFilter');
   select.innerHTML = '<option value="">جميع الولايات</option>';
