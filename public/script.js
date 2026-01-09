@@ -207,7 +207,7 @@ async function loadGlobalData() {
     console.log('تم تحميل globalData:', globalData);
     // ممكن بعدها تنادي دوال مثل: populateWeekOptions() وغيرها
     populateFormOptions();
-    populateWilayahFilters();
+    populateWilayahFilter();
   } catch (err) {
     console.error('خطأ في تحميل globalData:', err);
   }
