@@ -207,7 +207,6 @@ async function loadGlobalData() {
     console.log('تم تحميل globalData:', globalData);
     // ممكن بعدها تنادي دوال مثل: populateWeekOptions() وغيرها
     populateFormOptions();
-    populateWilayahFilter();
   } catch (err) {
     console.error('خطأ في تحميل globalData:', err);
   }
@@ -1408,6 +1407,22 @@ function populateFormOptions() {
     });
   }
 
+ // ─── Wilayah Filter ─────────────────────
+  const wilayahSelect = document.getElementById('adminReportWilayahFilter');
+  if (wilayahSelect && globalData.wilayat && globalData.governorates) {
+    wilayahSelect.innerHTML = '<option value="">جميع الولايات</option>';
+
+    // Loop through governorates → wilayats
+    globalData.governorates.forEach(gov => {
+      const wilayats = globalData.wilayat[gov] || [];
+      wilayats.forEach(w => {
+        const option = document.createElement('option');
+        option.value = w;
+        option.textContent = w;
+        wilayahSelect.appendChild(option);
+      });
+    });
+  }
 }
 
 // فتح البوب آب وتحميل البيانات فيه
