@@ -45,6 +45,7 @@ const showAdminBox = () => {
     document.getElementById('searchInput').value = '';
     document.getElementById('adminReportWeekFilter').value = '';
     document.getElementById('adminReportSurahFilter').value = '';
+    document.getElementById('adminReportStateFilter').value = '';
     displayReports(); // Show all reports for admin
     displayAccountRequests(); // Show pending account requests
 };
@@ -206,6 +207,7 @@ async function loadGlobalData() {
     console.log('تم تحميل globalData:', globalData);
     // ممكن بعدها تنادي دوال مثل: populateWeekOptions() وغيرها
     populateFormOptions();
+    populateWilayahFilters();
   } catch (err) {
     console.error('خطأ في تحميل globalData:', err);
   }
