@@ -45,7 +45,7 @@ const showAdminBox = () => {
     document.getElementById('searchInput').value = '';
     document.getElementById('adminReportWeekFilter').value = '';
     document.getElementById('adminReportSurahFilter').value = '';
-    document.getElementById('adminReportStateFilter').value = '';
+    document.getElementById('adminReportWilayahFilter').value = '';
     displayReports(); // Show all reports for admin
     displayAccountRequests(); // Show pending account requests
 };
