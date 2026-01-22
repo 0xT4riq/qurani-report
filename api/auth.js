@@ -33,7 +33,7 @@ const handleLogin = async (req, res) => {
 
   const { data, error } = await supabase
     .from('accounts')
-    .select('name, approved, isadmin')
+    .select('name, approved, isadmin, wilayah')
     .eq('name', trimmedName)
     .eq('password', trimmedPassword)
     .single();
@@ -55,6 +55,7 @@ const handleLogin = async (req, res) => {
         userName: data.name,
         isAdmin: data.isadmin,
         approved: data.approved,
+        state: data.wilayah,
     },
     });
 };
