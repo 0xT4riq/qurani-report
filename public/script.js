@@ -217,7 +217,7 @@ async function submitReport() {
     alert('الرجاء تسجيل الدخول.');
     return;
   }
-  if (!currentUser.wilayah) {
+  if (!currentUser.state) {
     alert('الرجاء اختيار ولايتك أولاً');
     return;
   }
