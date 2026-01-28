@@ -254,7 +254,7 @@ async function submitReport() {
     date: new Date().toISOString().split('T')[0], // التاريخ اليوم YYYY-MM-DD
     surah,
     week,
-    wilayah: currentUser.wilayah,
+    wilayah: currentUser.state,
   };
   const checklist = globalData.reportChecklist.forEach(item => {
     const checkbox = document.getElementById(item.id);
